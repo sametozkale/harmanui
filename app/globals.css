@@ -1,0 +1,190 @@
+@import "@heroui/react/styles";
+
+/* Explicitly declare our source directories so Tailwind's utility scan
+   is robust regardless of where the `@import "tailwindcss"` originates
+   (it is nested inside the HeroUI styles package). */
+@source "../app";
+@source "../components";
+@source "../lib";
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-title: var(--font-open-runde), var(--font-inter), ui-sans-serif, system-ui,
+    sans-serif;
+  --color-primary: #0090ff;
+}
+
+/* Harman UI brand primary — drives HeroUI accent-derived tokens (buttons, switches, links). */
+:root,
+.light,
+.default,
+[data-theme="light"],
+[data-theme="default"] {
+  --primary: #0090ff;
+  --accent: var(--primary);
+}
+
+/* ------------------------------------------------------------------ *
+ * Site chrome base styles.
+ * Unlayered rules deliberately win over HeroUI's `@layer base` so the
+ * documentation shell is pure white with our own type system.
+ * ------------------------------------------------------------------ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: #18181b;
+  font-family: var(--font-sans);
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-title {
+  font-family: var(--font-title);
+  letter-spacing: -0.01em;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+code,
+pre,
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  letter-spacing: normal;
+}
+
+.font-geist-mono {
+  font-family: var(--font-geist-mono), var(--font-mono), ui-monospace, monospace;
+  letter-spacing: normal;
+}
+
+::selection {
+  background: #18181b;
+  color: #ffffff;
+}
+
+/* Secondary buttons — soft blue surface matched to accent foreground text. */
+.button--secondary {
+  --button-bg: var(--accent-soft);
+  --button-bg-hover: var(--accent-soft-hover);
+  --button-bg-pressed: var(--accent-soft-hover);
+}
+
+/* Switches — green checked track (success) instead of brand accent blue. */
+.switch {
+  --switch-control-bg-checked: var(--success);
+  --switch-control-bg-checked-hover: var(--success-hover);
+}
+
+/* Playground column scroll — clipped to the stage row; content scrolls inside. */
+.playground-scroll-pane {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d8 transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.playground-scroll-pane::-webkit-scrollbar {
+  width: 6px;
+}
+
+.playground-scroll-pane::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.playground-scroll-pane::-webkit-scrollbar-thumb {
+  background-color: #d4d4d8;
+  border-radius: 9999px;
+}
+
+.playground-scroll-pane::-webkit-scrollbar-thumb:hover {
+  background-color: #a1a1aa;
+}
+
+/* Panel scroll — soft fade into the fixed search header (opacity driven by scroll). */
+.playground-panel-scroll-fade {
+  height: 5rem;
+  background: linear-gradient(
+    180deg,
+    #fafafa 0%,
+    rgb(250 250 250 / 0.96) 18%,
+    rgb(250 250 250 / 0.82) 36%,
+    rgb(250 250 250 / 0.58) 54%,
+    rgb(250 250 250 / 0.3) 72%,
+    transparent 100%
+  );
+}
+
+/* Customization panel — compact sliders (HeroUI default track is h-5 / 20px). */
+.customize-slider[data-orientation="horizontal"] .slider__track {
+  height: 1rem;
+  border-left-width: 0.6rem;
+  border-right-width: 0.6rem;
+  border-radius: 0.625rem;
+}
+
+.customize-slider[data-orientation="horizontal"] .slider__thumb {
+  width: calc(1.2rem + 0.2rem);
+}
+
+.customize-slider[data-orientation="horizontal"] .slider__thumb::after {
+  width: 1.2rem;
+  height: 0.8rem;
+  border-radius: 0.375rem;
+}
+
+/* ------------------------------------------------------------------ *
+ * About page (dark editorial) — hero entrance + scoped selection.
+ * ------------------------------------------------------------------ */
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lp-rise {
+  animation: lp-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.lp ::selection {
+  background: #f0efeb;
+  color: #1a1a1a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-rise {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}

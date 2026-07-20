@@ -1,0 +1,48 @@
+{
+  "$schema": "https://harman-ui.dev/schema/component.json",
+  "name": "button",
+  "family": "Button",
+  "category": "buttons",
+  "description": "Triggers an action or event. Built on React Aria's Button for full keyboard and screen-reader support.",
+  "dependencies": ["@heroui/react"],
+  "registryDependencies": [],
+  "files": [
+    { "path": "components/registry/button/Button.tsx", "type": "registry:ui" },
+    { "path": "components/registry/button/ButtonGroup.tsx", "type": "registry:ui" },
+    { "path": "components/registry/button/IconButton.tsx", "type": "registry:ui" }
+  ],
+  "exports": ["Button", "ButtonGroup", "IconButton"],
+  "variants": {
+    "variant": {
+      "type": "enum",
+      "values": ["primary", "secondary", "tertiary", "outline", "ghost", "danger", "danger-soft"],
+      "default": "primary",
+      "description": "Visual style conveying the action's emphasis and intent."
+    },
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md", "lg"],
+      "default": "md",
+      "description": "Control size."
+    },
+    "isDisabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Prevents interaction and dims the control."
+    },
+    "isIconOnly": {
+      "type": "boolean",
+      "default": false,
+      "description": "Renders a square, label-less button for a single icon."
+    },
+    "fullWidth": {
+      "type": "boolean",
+      "default": false,
+      "description": "Stretches the button to fill its container."
+    }
+  },
+  "a11y": {
+    "role": "button",
+    "notes": "Icon-only buttons must provide an aria-label. Focus ring and keyboard activation come from React Aria."
+  }
+}
