@@ -5,6 +5,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { Customization, PreviewMotionOptions } from "@/lib/theme/customization";
 import type { ComponentFamily, PreviewItem } from "../types";
+import { harmanAccordionPreviewStyle } from "./accordion-style";
 
 export interface SpecCtx {
   style: CSSProperties;
@@ -32,7 +33,8 @@ export interface FamilySpec {
 /** Forward runtime enum strings into strictly-typed HeroUI props. */
 export const asEnum = (v: string | undefined) => v as never;
 
-const BUTTON_GROUP_STYLE_OMIT = new Set([
+/** ButtonGroup owns seams, gap, radii, and native typography — strip playground tokens. */
+export const BUTTON_GROUP_STYLE_OMIT = new Set([
   "gap",
   "--radius",
   "paddingLeft",
@@ -45,9 +47,16 @@ const BUTTON_GROUP_STYLE_OMIT = new Set([
   "borderStyle",
   "borderWidth",
   "boxShadow",
+  "fontFamily",
+  "fontSize",
+  "fontWeight",
+  "letterSpacing",
+  "whiteSpace",
+  "transitionProperty",
+  "transitionDuration",
+  "transitionTimingFunction",
 ]);
 
-/** ButtonGroup owns seams, gap, and corner radii — strip layout/color tokens that break it. */
 export function buttonGroupPreviewCtx(ctx: SpecCtx): SpecCtx {
   const style = Object.fromEntries(
     Object.entries(ctx.style).filter(([key]) => !BUTTON_GROUP_STYLE_OMIT.has(key)),
@@ -62,8 +71,25 @@ export function buttonGroupPreviewCtx(ctx: SpecCtx): SpecCtx {
         !token.startsWith("hover:-translate"),
     )
     .join(" ");
-  return { ...ctx, style, className };
+  return {
+    ...ctx,
+    style,
+    className,
+    motionOptions: { pressFeedback: false, hoverEffects: false },
+  };
 }
+
+/** Harman accordion — map playground tokens to compact primary CSS variables. */
+export function harmanAccordionPreviewCtx(ctx: SpecCtx): SpecCtx {
+  return {
+    ...ctx,
+    style: harmanAccordionPreviewStyle(ctx.customization),
+    className: ctx.className,
+  };
+}
+
+/** @deprecated Use {@link harmanAccordionPreviewCtx} */
+export const fussionaryAccordionPreviewCtx = harmanAccordionPreviewCtx;
 
 const INTRINSIC_PREVIEW_STYLE_OMIT = new Set([
   "gap",

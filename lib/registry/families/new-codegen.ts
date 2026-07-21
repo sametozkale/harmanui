@@ -3,7 +3,20 @@
  */
 
 import type { PreviewItem } from "@/lib/registry/types";
-import { attrs, codeCtx, buttonGroupCodeCtx } from "./_code";
+import { attrs, codeCtx, buttonGroupCodeCtx, toggleButtonGroupChildrenJsx } from "./_code";
+import {
+  ACCORDION_MOTION_PANEL_HELPER,
+  ACCORDION_MOTION_PREAMBLE,
+  ACCORDION_SPLITTED_INDICATOR_HELPER,
+  ACCORDION_SURFACE_INDICATOR_HELPER,
+  accordionItemsJsx,
+} from "./accordion-content";
+import { harmanAccordionStyleLiteral } from "./accordion-style";
+import {
+  disclosureGroupJsx,
+  disclosureStandaloneJsx,
+} from "./disclosure-content";
+import { typographyProseJsx, TYPOGRAPHY_DEMO, TYPOGRAPHY_HEADING_LABELS } from "./typography-content";
 import {
   COLOR_PREVIEW_DEFAULT,
   colorSwatchPickerItemsJsx,
@@ -337,12 +350,8 @@ function build(component: string, p: PreviewItem["props"], ctx: SpecCtx): CodeBu
       return {
         hero: ["ToggleButtonGroup", "ToggleButton"],
         jsx:
-          `<ToggleButtonGroup\n${attrs([["size", p.size], ["defaultSelectedKeys", '["center"]']])}\n${c.classAttr}\n${c.styleAttr}\n      >\n` +
-          `        <ToggleButton id="left" variant="${p.variant ?? "default"}">Left</ToggleButton>\n` +
-          `        <ToggleButtonGroup.Separator />\n` +
-          `        <ToggleButton id="center" variant="${p.variant ?? "default"}">Center</ToggleButton>\n` +
-          `        <ToggleButtonGroup.Separator />\n` +
-          `        <ToggleButton id="right" variant="${p.variant ?? "default"}">Right</ToggleButton>\n` +
+          `<ToggleButtonGroup\n${attrs([["size", p.size], ["selectionMode", "single"], ["defaultSelectedKeys", '["center"]']])}${c.styleAttr ? `\n${c.styleAttr}` : ""}\n      >\n` +
+          `${toggleButtonGroupChildrenJsx(p.variant)}\n` +
           `      </ToggleButtonGroup>`,
       };
     }
@@ -870,28 +879,66 @@ function build(component: string, p: PreviewItem["props"], ctx: SpecCtx): CodeBu
 
     case "Typography": {
       const type = p.variant ?? "body";
+      const sharedAttrs = attrs([
+        ["color", p.color],
+        ["align", p.align],
+        ["weight", p.weight],
+        ["truncate", p.truncate],
+      ]);
+      const sharedLines =
+        (sharedAttrs ? `${sharedAttrs}\n` : "") + `${c.classAttr}\n${c.styleAttr}`;
+
+      if (type === "prose") {
+        return {
+          hero: ["Typography"],
+          jsx: typographyProseJsx(),
+        };
+      }
+
       if (type === "code") {
         return {
           hero: ["Typography"],
-          jsx: `<Typography.Code\n${attrs([["color", p.color]])}\n${c.classAttr}\n${c.styleAttr}\n      >\n        ${p.label ?? "npm install"}\n      </Typography.Code>`,
+          jsx:
+            `<Typography.Code\n${sharedLines}      >\n` +
+            `        ${p.label ?? TYPOGRAPHY_DEMO.codeInstall}\n` +
+            `      </Typography.Code>`,
         };
       }
+
       if (type.startsWith("h")) {
-        const level = type.replace("h", "");
+        const level = Number(type.replace("h", ""));
         return {
           hero: ["Typography"],
           jsx:
-            `<Typography.Heading\n${attrs([["level", Number(level)], ["color", p.color]])}\n${c.classAttr}\n${c.styleAttr}\n      >\n` +
-            `        ${p.label ?? "Heading"}\n` +
+            `<Typography.Heading\n${attrs([["level", level]])}\n${sharedLines}      >\n` +
+            `        ${p.label ?? TYPOGRAPHY_HEADING_LABELS[`h${level}` as keyof typeof TYPOGRAPHY_HEADING_LABELS]}\n` +
             `      </Typography.Heading>`,
         };
       }
+
+      const paragraphAttrs = attrs([
+        ["color", p.color],
+        ["align", p.align],
+        ["weight", p.weight],
+        ["truncate", p.truncate],
+        ["size", p.size === "sm" || p.size === "xs" ? p.size : undefined],
+      ]);
+      const truncateClass = p.truncate ? `        className="max-w-xs"\n` : "";
+      const paragraphJsx =
+        `<Typography.Paragraph\n${paragraphAttrs}\n${truncateClass || c.classAttr ? `${truncateClass}${c.classAttr}\n` : ""}${c.styleAttr}\n      >\n` +
+        `        ${p.label ?? TYPOGRAPHY_DEMO.paragraph}\n` +
+        `      </Typography.Paragraph>`;
+
+      if (p.align) {
+        return {
+          hero: ["Typography"],
+          jsx: `<div className="w-full max-w-md">\n        ${paragraphJsx}\n      </div>`,
+        };
+      }
+
       return {
         hero: ["Typography"],
-        jsx:
-          `<Typography.Paragraph\n${attrs([["color", p.color]])}\n${c.classAttr}\n${c.styleAttr}\n      >\n` +
-          `        ${p.label ?? "Body text for paragraphs."}\n` +
-          `      </Typography.Paragraph>`,
+        jsx: paragraphJsx,
       };
     }
 
@@ -988,70 +1035,65 @@ function build(component: string, p: PreviewItem["props"], ctx: SpecCtx): CodeBu
       };
     }
 
-    case "Accordion":
+    case "Accordion": {
+      const motionPreamble = [
+        ...ACCORDION_MOTION_PREAMBLE,
+        ACCORDION_MOTION_PANEL_HELPER,
+      ];
+      const accordionStyle = harmanAccordionStyleLiteral(ctx.customization);
+
+      if (p.variant === "surface") {
+        return {
+          hero: ["Accordion"],
+          icons: ["ArrowDown01Icon"],
+          preamble: [...motionPreamble, ACCORDION_SURFACE_INDICATOR_HELPER],
+          jsx:
+            `<Accordion\n${attrs([["variant", "surface"]])}\n        className="harman-accordion harman-accordion--surface text-left"\n        style={${accordionStyle}}\n      >\n` +
+            `${accordionItemsJsx("surface")}\n` +
+            `      </Accordion>`,
+        };
+      }
       return {
         hero: ["Accordion"],
+        icons: ["Add01Icon"],
+        preamble: [...motionPreamble, ACCORDION_SPLITTED_INDICATOR_HELPER],
         jsx:
-          `<Accordion\n${attrs([["variant", p.variant]])}\n${c.classAttr}\n${c.styleAttr}\n      >\n` +
-          `        <Accordion.Item id="shipping">\n` +
-          `          <Accordion.Heading>\n` +
-          `            <Accordion.Trigger>\n` +
-          `              Shipping\n` +
-          `              <Accordion.Indicator />\n` +
-          `            </Accordion.Trigger>\n` +
-          `          </Accordion.Heading>\n` +
-          `          <Accordion.Panel>\n` +
-          `            <Accordion.Body>Arrives in 3–5 business days.</Accordion.Body>\n` +
-          `          </Accordion.Panel>\n` +
-          `        </Accordion.Item>\n` +
+          `<Accordion\n${attrs([["allowsMultipleExpanded", true]])}\n        className="harman-accordion harman-accordion--splitted text-left"\n        style={${accordionStyle}}\n      >\n` +
+          `${accordionItemsJsx("splitted")}\n` +
           `      </Accordion>`,
       };
+    }
 
     case "Disclosure":
       return {
-        hero: ["Disclosure"],
-        jsx:
-          `<Disclosure\n${c.classAttr}\n${c.styleAttr}\n      >\n` +
-          `        <Disclosure.Heading>\n` +
-          `          <Disclosure.Trigger>\n` +
-          `            ${p.label ?? "Shipping details"}\n` +
-          `            <Disclosure.Indicator />\n` +
-          `          </Disclosure.Trigger>\n` +
-          `        </Disclosure.Heading>\n` +
-          `        <Disclosure.Content>\n` +
-          `          <Disclosure.Body>Orders ship within 2 business days.</Disclosure.Body>\n` +
-          `        </Disclosure.Content>\n` +
-          `      </Disclosure>`,
+        hero: ["Disclosure", "Button"],
+        icons: ["QrCode01Icon"],
+        preamble: [`import { useState } from "react";`],
+        jsx: disclosureStandaloneJsx(),
+        wrapExample: (jsx) =>
+          `  const [isExpanded, setIsExpanded] = useState(true);\n\n` +
+          `  return (\n` +
+          `    <div className="w-full max-w-md text-center">\n` +
+          `      ${jsx}\n` +
+          `    </div>\n` +
+          `  );`,
       };
 
     case "DisclosureGroup":
       return {
-        hero: ["DisclosureGroup", "Disclosure"],
-        jsx:
-          `<DisclosureGroup\n${c.classAttr}\n${c.styleAttr}\n      >\n` +
-          `        <Disclosure>\n` +
-          `          <Disclosure.Heading>\n` +
-          `            <Disclosure.Trigger>\n` +
-          `              Shipping details\n` +
-          `              <Disclosure.Indicator />\n` +
-          `            </Disclosure.Trigger>\n` +
-          `          </Disclosure.Heading>\n` +
-          `          <Disclosure.Content>\n` +
-          `            <Disclosure.Body>Orders ship within 2 business days.</Disclosure.Body>\n` +
-          `          </Disclosure.Content>\n` +
-          `        </Disclosure>\n` +
-          `        <Disclosure>\n` +
-          `          <Disclosure.Heading>\n` +
-          `            <Disclosure.Trigger>\n` +
-          `              Returns\n` +
-          `              <Disclosure.Indicator />\n` +
-          `            </Disclosure.Trigger>\n` +
-          `          </Disclosure.Heading>\n` +
-          `          <Disclosure.Content>\n` +
-          `            <Disclosure.Body>Free returns within 30 days.</Disclosure.Body>\n` +
-          `          </Disclosure.Content>\n` +
-          `        </Disclosure>\n` +
-          `      </DisclosureGroup>`,
+        hero: ["DisclosureGroup", "Disclosure", "Button", "Separator"],
+        icons: ["QrCode01Icon", "AppleIcon"],
+        preamble: [`import { useState } from "react";`, `import type { Key } from "@heroui/react";`],
+        jsx: disclosureGroupJsx(),
+        wrapExample: (jsx) =>
+          `  const [expandedKeys, setExpandedKeys] = useState<Set<Key>>(new Set(["preview"]));\n\n` +
+          `  return (\n` +
+          `    <div className="w-full max-w-md">\n` +
+          `      <div className="flex flex-col gap-4 bg-transparent p-4">\n` +
+          `        ${jsx}\n` +
+          `      </div>\n` +
+          `    </div>\n` +
+          `  );`,
       };
 
     case "Surface":

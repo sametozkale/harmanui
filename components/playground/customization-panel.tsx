@@ -103,19 +103,21 @@ function shouldShowSection(
 export function CustomizationPanelSections({
   familyId,
   tabId,
+  itemId,
   value: c,
   onChange,
   searchQuery,
 }: {
   familyId: string;
   tabId: string;
+  itemId?: string;
   value: Customization;
   onChange: (next: Customization) => void;
   searchQuery: string;
 }) {
   const visibility = useMemo(
-    () => getCustomizeVisibility(familyId, tabId),
-    [familyId, tabId],
+    () => getCustomizeVisibility(familyId, tabId, itemId),
+    [familyId, tabId, itemId],
   );
   const searching = normalizeSearchQuery(searchQuery).length > 0;
   const expandWhileSearching = searching ? true : undefined;
@@ -168,7 +170,7 @@ export function CustomizationPanelSections({
   ].some(Boolean);
 
   return (
-    <div>
+    <div className="flex flex-col gap-1">
         {shouldShowSection(searchQuery, "typography", visibility, typographyLabels) && (
           <Accordion
             icon={<ControlIcon name="typography" className="size-5" />}
@@ -763,11 +765,13 @@ export function CustomizationPanelSections({
 export function CustomizationPanel({
   familyId,
   tabId,
+  itemId,
   value,
   onChange,
 }: {
   familyId: string;
   tabId: string;
+  itemId?: string;
   value: Customization;
   onChange: (next: Customization) => void;
 }) {
@@ -785,6 +789,7 @@ export function CustomizationPanel({
         <CustomizationPanelSections
           familyId={familyId}
           tabId={tabId}
+          itemId={itemId}
           value={value}
           onChange={onChange}
           searchQuery={searchQuery}

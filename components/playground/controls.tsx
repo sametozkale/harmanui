@@ -203,7 +203,7 @@ export function Accordion({
         style={{ gridTemplateRows: open ? "minmax(0, max-content)" : "0fr" }}
       >
         <div className="min-h-0 overflow-hidden">
-          <div className="space-y-4 pb-5 pt-3 pl-2.5 pr-0.5">{children}</div>
+          <div className="space-y-4 pb-3 pt-3 pl-2.5 pr-0.5">{children}</div>
         </div>
       </div>
     </div>

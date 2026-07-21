@@ -3,7 +3,7 @@
  *
  * Grouped by family, never by variant (Button, ButtonGroup and IconButton all
  * live under a single "Button" entry; their variants live in the tab menu).
- * First two categories are open by default; the rest start collapsed.
+ * First category is open by default; the rest start collapsed.
  */
 "use client";
 
@@ -31,7 +31,7 @@ export function Sidebar({
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [open, setOpen] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(SIDEBAR.map((cat, i) => [cat.id, i < 2])),
+    Object.fromEntries(SIDEBAR.map((cat, i) => [cat.id, i < 1])),
   );
 
   const searching = normalizeSearchQuery(searchQuery).length > 0;

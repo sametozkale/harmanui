@@ -75,6 +75,12 @@ export interface PreviewProps {
   layout?: string;
   /** Free-form example content for typography, empty-state, etc. */
   content?: string;
+  /** Typography text alignment. */
+  align?: string;
+  /** Typography font weight override. */
+  weight?: string;
+  /** Typography single-line truncation. */
+  truncate?: boolean;
   /** Image URL for Avatar.Image and similar media previews. */
   src?: string;
   /** Accessible alt text for image previews. */

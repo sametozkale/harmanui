@@ -1,21 +1,26 @@
 /**
  * Playground shell — owns all state and composes the three columns.
  *
- * A single {@link Customization} object plus the current family/tab/variant
- * selection is the source of truth. It flows down to the preview, the code
- * generator and the shareable URL, so everything stays perfectly in sync.
+ * Customization is stored per preview item (`family:tab:variant`). Switching
+ * components restores that item's saved settings; URL `c` encodes only the
+ * active item for sharing.
  */
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   type Customization,
-  DEFAULT_CUSTOMIZATION,
   buildPreviewStyle,
   buildPreviewClassName,
   encodeCustomization,
   decodeCustomization,
 } from "@/lib/theme/customization";
+import {
+  customizationScopeKey,
+  loadCustomizationsFromStorage,
+  resolveCustomization,
+  saveCustomizationsToStorage,
+} from "@/lib/theme/customization-store";
 import { getPreviewMotionOptions } from "@/lib/theme/customize-capabilities";
 import { FAMILIES, GITHUB_REPO } from "@/lib/registry/registry";
 import type { PreviewItem } from "@/lib/registry/types";
@@ -74,10 +79,36 @@ export function PlaygroundClient() {
   const [itemId, setItemId] = useState(
     FAMILIES[DEFAULT_FAMILY].tabs[0].groups[0].items[0].id,
   );
-  const [customization, setCustomization] = useState<Customization>(
-    DEFAULT_CUSTOMIZATION,
+  const [customizations, setCustomizations] = useState<Record<string, Customization>>(
+    {},
   );
   const hydrated = useRef(false);
+
+  const customizationKey = useMemo(
+    () => customizationScopeKey(familyId, tabId, itemId),
+    [familyId, tabId, itemId],
+  );
+
+  const customization = useMemo(
+    () => resolveCustomization(customizations, customizationKey),
+    [customizations, customizationKey],
+  );
+
+  const handleCustomizationChange = useCallback(
+    (next: Customization) => {
+      setCustomizations((prev) => ({ ...prev, [customizationKey]: next }));
+    },
+    [customizationKey],
+  );
+
+  const handleResetCustomization = useCallback(() => {
+    setCustomizations((prev) => {
+      if (!(customizationKey in prev)) return prev;
+      const next = { ...prev };
+      delete next[customizationKey];
+      return next;
+    });
+  }, [customizationKey]);
 
   // Read shareable state from the URL once, after mount (avoids hydration
   // mismatch — server always renders the defaults).
@@ -87,19 +118,40 @@ export function PlaygroundClient() {
     const t = params.get("t");
     const v = params.get("v");
     const c = params.get("c");
+
+    let nextFamily = DEFAULT_FAMILY;
+    let nextTab = FAMILIES[DEFAULT_FAMILY].tabs[0].id;
+    let nextItem = firstItemId(nextFamily, nextTab);
+
     const resolved = resolveFamilyFromUrl(f, t);
     if (resolved) {
-      const { familyId: nextFamily, tabId: nextTab } = resolved;
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- post-mount URL hydration
+      nextFamily = resolved.familyId;
+      nextTab = resolved.tabId;
+      nextItem =
+        v && findItem(nextFamily, nextTab, v)
+          ? v
+          : firstItemId(nextFamily, nextTab);
       setFamilyId(nextFamily);
       setTabId(nextTab);
-      setItemId(
-        v && findItem(nextFamily, nextTab, v) ? v : firstItemId(nextFamily, nextTab),
-      );
+      setItemId(nextItem);
     }
-    if (c) setCustomization(decodeCustomization(c));
+
+    const stored = loadCustomizationsFromStorage();
+    if (c) {
+      stored[customizationScopeKey(nextFamily, nextTab, nextItem)] =
+        decodeCustomization(c);
+    }
+
+    setCustomizations(stored);
     hydrated.current = true;
   }, []);
+
+  // Persist per-item customizations locally.
+  useEffect(() => {
+    if (!hydrated.current) return;
+    const id = setTimeout(() => saveCustomizationsToStorage(customizations), 300);
+    return () => clearTimeout(id);
+  }, [customizations]);
 
   // Write shareable state back to the URL (debounced).
   useEffect(() => {
@@ -124,8 +176,8 @@ export function PlaygroundClient() {
 
   const previewStyle = useMemo(() => buildPreviewStyle(customization), [customization]);
   const motionOptions = useMemo(
-    () => getPreviewMotionOptions(familyId, tabId, customization),
-    [familyId, tabId, customization],
+    () => getPreviewMotionOptions(familyId, tabId, customization, selectedItem?.id),
+    [familyId, tabId, customization, selectedItem?.id],
   );
   const previewClassName = useMemo(
     () => buildPreviewClassName(customization, motionOptions),
@@ -134,7 +186,13 @@ export function PlaygroundClient() {
   const code = useMemo(
     () =>
       selectedItem
-        ? generateCode({ familyId, tab, props: selectedItem.props, customization })
+        ? generateCode({
+            familyId,
+            tab,
+            itemId: selectedItem.id,
+            props: selectedItem.props,
+            customization,
+          })
         : "",
     [familyId, tab, selectedItem, customization],
   );
@@ -197,7 +255,7 @@ export function PlaygroundClient() {
             previewClassName={previewClassName}
             customization={customization}
             sound={customization.sound}
-            onReset={() => setCustomization(DEFAULT_CUSTOMIZATION)}
+            onReset={handleResetCustomization}
             className={`col-start-1 row-start-3 ${PLAYGROUND_STAGE_ROW_CLASS} lg:col-start-2`}
           />
 
@@ -206,10 +264,12 @@ export function PlaygroundClient() {
           >
             <div className={PLAYGROUND_PANEL_SHELL_CLASS}>
               <CustomizationPanel
+                key={customizationKey}
                 familyId={familyId}
                 tabId={tab.id}
+                itemId={selectedItem?.id}
                 value={customization}
-                onChange={setCustomization}
+                onChange={handleCustomizationChange}
               />
             </div>
           </aside>

@@ -12,6 +12,7 @@ import { getPreviewMotionOptions } from "../theme/customize-capabilities";
 export interface GenerateArgs {
   familyId: string;
   tab: FamilyTab;
+  itemId?: string;
   props: PreviewProps;
   customization: Customization;
 }
@@ -20,14 +21,15 @@ export interface GenerateArgs {
 export function generateCode({
   familyId,
   tab,
+  itemId,
   props,
   customization,
 }: GenerateArgs): string {
   const spec = SPECS[familyId];
   if (!spec) return "";
 
-  const item = { id: "", label: "", props };
-  const motionOptions = getPreviewMotionOptions(familyId, tab.id, customization);
+  const item = { id: itemId ?? "", label: "", props };
+  const motionOptions = getPreviewMotionOptions(familyId, tab.id, customization, itemId);
   const built = spec.code(tab.component, item, {
     style: {},
     className: "",
@@ -38,6 +40,7 @@ export function generateCode({
   return formatExample(built, {
     familyId,
     tabId: tab.id,
+    itemId,
     customization: customization ?? DEFAULT_CUSTOMIZATION,
   });
 }

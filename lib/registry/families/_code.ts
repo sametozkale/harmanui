@@ -12,11 +12,12 @@ import {
   getCustomizeVisibility,
   sectionHasVisibleControls,
 } from "@/lib/theme/customize-capabilities";
-import type { CodeBuilt } from "./_spec";
+import { BUTTON_GROUP_STYLE_OMIT, type CodeBuilt } from "./_spec";
 
 export interface FormatExampleOptions {
   familyId: string;
   tabId: string;
+  itemId?: string;
   customization: Customization;
 }
 
@@ -61,52 +62,48 @@ export function codeCtx(
   };
 }
 
-const BUTTON_GROUP_STYLE_OMIT = new Set([
-  "gap",
-  "--radius",
-  "paddingLeft",
-  "paddingRight",
-  "paddingTop",
-  "paddingBottom",
-  "backgroundColor",
-  "color",
-  "borderColor",
-  "borderStyle",
-  "borderWidth",
-  "boxShadow",
-]);
-
 export function buttonGroupStyleLiteral(c: Customization): string {
-  const lines = styleEntries(c)
-    .filter(([k]) => !BUTTON_GROUP_STYLE_OMIT.has(k))
-    .map(([k, v]) => {
-      const key = /^[a-zA-Z][a-zA-Z0-9]*$/.test(k) ? k : `"${k}"`;
-      const value = typeof v === "number" ? String(v) : `"${v}"`;
-      return `        ${key}: ${value},`;
-    });
-  return `{\n${lines.join("\n")}\n      } as React.CSSProperties`;
+  const entries = styleEntries(c).filter(([k]) => !BUTTON_GROUP_STYLE_OMIT.has(k));
+  return styleLiteralFromEntries(entries);
+}
+
+/** HeroUI ButtonGroup anatomy — separators live inside buttons 2 and 3. */
+export const BUTTON_GROUP_CHILDREN_JSX = `        <Button>First</Button>
+        <Button>
+          <ButtonGroup.Separator />
+          Second
+        </Button>
+        <Button>
+          <ButtonGroup.Separator />
+          Third
+        </Button>`;
+
+export function toggleButtonGroupChildrenJsx(variant?: string): string {
+  const variantAttr = variant ? ` variant="${variant}"` : "";
+  return `        <ToggleButton id="left"${variantAttr}>
+          Left
+        </ToggleButton>
+        <ToggleButton id="center"${variantAttr}>
+          <ToggleButtonGroup.Separator />
+          Center
+        </ToggleButton>
+        <ToggleButton id="right"${variantAttr}>
+          <ToggleButtonGroup.Separator />
+          Right
+        </ToggleButton>`;
 }
 
 export function buttonGroupCodeCtx(
   customization: Customization,
-  motionOptions?: PreviewMotionOptions,
+  _motionOptions?: PreviewMotionOptions,
 ) {
-  const className = buildPreviewClassName(customization, motionOptions)
-    .split(/\s+/)
-    .filter(
-      (token) =>
-        token &&
-        !token.startsWith("active:scale") &&
-        !token.startsWith("hover:scale") &&
-        !token.startsWith("hover:-translate"),
-    )
-    .join(" ");
   const style = buttonGroupStyleLiteral(customization);
+  const hasStyle = style !== "{} as React.CSSProperties";
   return {
-    className,
+    className: "",
     style,
-    styleAttr: `        style={${style}}`,
-    classAttr: className ? `        className="${className}"` : "",
+    styleAttr: hasStyle ? `        style={${style}}` : "",
+    classAttr: "",
   };
 }
 
@@ -148,7 +145,11 @@ export function intrinsicCodeCtx(
 }
 
 function shouldEmitInteractionSound(options: FormatExampleOptions): boolean {
-  const visibility = getCustomizeVisibility(options.familyId, options.tabId);
+  const visibility = getCustomizeVisibility(
+    options.familyId,
+    options.tabId,
+    options.itemId,
+  );
   return sectionHasVisibleControls("sound", visibility);
 }
 

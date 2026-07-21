@@ -4,9 +4,14 @@
 
 import { PREVIEW_ICON_IMPORT } from "@/lib/icons";
 import type { PreviewItem } from "../types";
-import { attrs, codeCtx, buttonGroupCodeCtx, intrinsicCodeCtx } from "./_code";
+import {
+  attrs,
+  codeCtx,
+  BUTTON_GROUP_CHILDREN_JSX,
+  buttonGroupCodeCtx,
+  intrinsicCodeCtx,
+} from "./_code";
 import type { CodeBuilt, SpecCtx } from "./_spec";
-import { buttonGroupPreviewCtx } from "./_spec";
 import { buildComponentCode } from "./new-codegen";
 
 export const EXISTING_CODE: Record<
@@ -20,7 +25,7 @@ export const EXISTING_CODE: Record<
       const c = buttonGroupCodeCtx(ctx.customization, ctx.motionOptions);
       return {
         hero: ["ButtonGroup", "Button"],
-        jsx: `<ButtonGroup\n${attrs([["variant", p.variant], ["size", p.size]])}\n${c.classAttr}\n${c.styleAttr}\n      >\n        <Button>One</Button>\n        <Button>Two</Button>\n        <Button>Three</Button>\n      </ButtonGroup>`,
+        jsx: `<ButtonGroup\n${attrs([["variant", p.variant], ["size", p.size]])}${c.styleAttr ? `\n${c.styleAttr}` : ""}\n      >\n${BUTTON_GROUP_CHILDREN_JSX}\n      </ButtonGroup>`,
       };
     }
     if (p.isIconOnly && p.icon) {

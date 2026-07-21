@@ -54,9 +54,6 @@ import {
   EmptyState,
   ScrollShadow,
   Card,
-  Accordion,
-  Disclosure,
-  DisclosureGroup,
   Surface,
   Fieldset,
   Button,
@@ -81,6 +78,15 @@ import {
   COLOR_PREVIEW_DEFAULT,
   COLOR_PREVIEW_SWATCHES,
 } from "./color-preview";
+import { AccordionPreview } from "./accordion-preview";
+import {
+  DisclosureGroupPreview,
+  DisclosurePreview,
+} from "./disclosure-preview";
+import {
+  TYPOGRAPHY_DEMO,
+  TYPOGRAPHY_HEADING_LABELS,
+} from "./typography-content";
 
 const SELECT_ITEMS = [
   { id: "cat", label: "Cat" },
@@ -1138,34 +1144,70 @@ export function renderProgressBar(_component: string, item: PreviewItem, ctx: Sp
   );
 }
 
+function typographySharedProps(p: PreviewItem["props"], ctx: SpecCtx) {
+  const truncateClass = p.truncate ? "max-w-xs" : "";
+  return {
+    color: p.color ? asEnum(p.color) : undefined,
+    align: p.align ? asEnum(p.align) : undefined,
+    weight: p.weight ? asEnum(p.weight) : undefined,
+    truncate: p.truncate,
+    style: ctx.style,
+    className: [truncateClass, ctx.className].filter(Boolean).join(" "),
+  };
+}
+
 function renderTypography(_component: string, item: PreviewItem, ctx: SpecCtx): ReactNode {
   const p = item.props;
   const type = p.variant ?? "body";
+  const shared = typographySharedProps(p, ctx);
+
+  if (type === "prose") {
+    return (
+      <Typography.Prose
+        style={ctx.style}
+        className={`flex max-w-xl flex-col gap-4 ${ctx.className}`}
+      >
+        <Typography.Heading level={1}>{TYPOGRAPHY_DEMO.heading}</Typography.Heading>
+        <Typography.Paragraph>{TYPOGRAPHY_DEMO.paragraph}</Typography.Paragraph>
+        <Typography.Paragraph color="muted" size="sm">
+          {TYPOGRAPHY_DEMO.paragraphMuted}
+        </Typography.Paragraph>
+        <Typography.Code>{TYPOGRAPHY_DEMO.code}</Typography.Code>
+      </Typography.Prose>
+    );
+  }
+
   if (type === "code") {
     return (
-      <Typography.Code color={asEnum(p.color)} style={ctx.style} className={ctx.className}>
-        {p.label ?? "npm install"}
+      <Typography.Code {...shared}>
+        {p.label ?? TYPOGRAPHY_DEMO.codeInstall}
       </Typography.Code>
     );
   }
+
   if (type.startsWith("h")) {
     const level = Number(type.replace("h", "")) as 1 | 2 | 3 | 4 | 5 | 6;
     return (
-      <Typography.Heading
-        level={level}
-        color={asEnum(p.color)}
-        style={ctx.style}
-        className={ctx.className}
-      >
-        {p.label ?? "Heading"}
+      <Typography.Heading level={level} {...shared}>
+        {p.label ?? TYPOGRAPHY_HEADING_LABELS[`h${level}` as keyof typeof TYPOGRAPHY_HEADING_LABELS]}
       </Typography.Heading>
     );
   }
-  return (
-    <Typography.Paragraph color={asEnum(p.color)} style={ctx.style} className={ctx.className}>
-      {p.label ?? "Body text for paragraphs."}
+
+  const paragraphSize =
+    p.size === "sm" || p.size === "xs" ? (p.size as "sm" | "xs") : undefined;
+
+  const paragraph = (
+    <Typography.Paragraph size={paragraphSize} {...shared}>
+      {p.label ?? TYPOGRAPHY_DEMO.paragraph}
     </Typography.Paragraph>
   );
+
+  if (p.align) {
+    return <div className="w-full max-w-md">{paragraph}</div>;
+  }
+
+  return paragraph;
 }
 
 function toastHandler(status: string | undefined, message: string) {
@@ -1274,81 +1316,15 @@ function renderScrollShadow(_component: string, item: PreviewItem, ctx: SpecCtx)
 }
 
 function renderAccordion(_component: string, item: PreviewItem, ctx: SpecCtx): ReactNode {
-  const p = item.props;
-  return (
-    <Accordion
-      variant={asEnum(p.variant)}
-      style={ctx.style}
-      className={`w-80 text-left ${ctx.className}`}
-    >
-      <Accordion.Item id="shipping">
-        <Accordion.Heading>
-          <Accordion.Trigger>
-            Shipping
-            <Accordion.Indicator />
-          </Accordion.Trigger>
-        </Accordion.Heading>
-        <Accordion.Panel>
-          <Accordion.Body>Arrives in 3–5 business days.</Accordion.Body>
-        </Accordion.Panel>
-      </Accordion.Item>
-      <Accordion.Item id="returns">
-        <Accordion.Heading>
-          <Accordion.Trigger>
-            Returns
-            <Accordion.Indicator />
-          </Accordion.Trigger>
-        </Accordion.Heading>
-        <Accordion.Panel>
-          <Accordion.Body>Free returns within 30 days.</Accordion.Body>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
-  );
-}
-
-function disclosurePanel(label: string, body: string) {
-  return (
-    <Disclosure style={{ width: "100%" }}>
-      <Disclosure.Heading>
-        <Disclosure.Trigger>
-          {label}
-          <Disclosure.Indicator />
-        </Disclosure.Trigger>
-      </Disclosure.Heading>
-      <Disclosure.Content>
-        <Disclosure.Body>{body}</Disclosure.Body>
-      </Disclosure.Content>
-    </Disclosure>
-  );
+  const variant = item.props.variant === "surface" ? "surface" : "splitted";
+  return <AccordionPreview variant={variant} ctx={ctx} />;
 }
 
 function renderDisclosure(component: string, item: PreviewItem, ctx: SpecCtx): ReactNode {
-  const p = item.props;
   if (component === "DisclosureGroup") {
-    return (
-      <DisclosureGroup
-        style={ctx.style}
-        className={`flex w-80 flex-col gap-2 text-left ${ctx.className}`}
-      >
-        {disclosurePanel("Shipping details", "Orders ship within 2 business days.")}
-        {disclosurePanel("Returns", "Free returns within 30 days.")}
-      </DisclosureGroup>
-    );
+    return <DisclosureGroupPreview ctx={ctx} />;
   }
-  return (
-    <Disclosure style={ctx.style} className={`w-80 text-left ${ctx.className}`}>
-      <Disclosure.Heading>
-        <Disclosure.Trigger>
-          {p.label ?? "Shipping details"}
-          <Disclosure.Indicator />
-        </Disclosure.Trigger>
-      </Disclosure.Heading>
-      <Disclosure.Content>
-        <Disclosure.Body>Orders ship within 2 business days.</Disclosure.Body>
-      </Disclosure.Content>
-    </Disclosure>
-  );
+  return <DisclosurePreview ctx={ctx} />;
 }
 
 function renderSurface(_component: string, item: PreviewItem, ctx: SpecCtx): ReactNode {
@@ -1446,22 +1422,24 @@ export function renderToggleButtonGroup(_component: string, item: PreviewItem, c
   const p = item.props;
   const groupCtx = buttonGroupPreviewCtx(ctx);
   const variant = asEnum(p.variant ?? "default");
+  const groupProps = {
+    size: asEnum(p.size),
+    selectionMode: "single" as const,
+    defaultSelectedKeys: ["center"],
+    ...(Object.keys(groupCtx.style).length > 0 ? { style: groupCtx.style } : {}),
+    ...(groupCtx.className ? { className: groupCtx.className } : {}),
+  };
   return (
-    <ToggleButtonGroup
-      size={asEnum(p.size)}
-      defaultSelectedKeys={["center"]}
-      style={groupCtx.style}
-      className={groupCtx.className}
-    >
+    <ToggleButtonGroup {...groupProps}>
       <ToggleButton id="left" variant={variant}>
         Left
       </ToggleButton>
-      <ToggleButtonGroup.Separator />
       <ToggleButton id="center" variant={variant}>
+        <ToggleButtonGroup.Separator />
         Center
       </ToggleButton>
-      <ToggleButtonGroup.Separator />
       <ToggleButton id="right" variant={variant}>
+        <ToggleButtonGroup.Separator />
         Right
       </ToggleButton>
     </ToggleButtonGroup>

@@ -81,6 +81,23 @@ pre,
   color: #ffffff;
 }
 
+/* Button groups — keep HeroUI seam dividers short, centered, and consistent. */
+.button-group--horizontal .button + .button {
+  margin-inline-start: -1px;
+}
+
+.button-group .button [data-slot="button-group-separator"] {
+  z-index: 1;
+}
+
+.toggle-button-group--horizontal .toggle-button + .toggle-button {
+  margin-inline-start: -1px;
+}
+
+.toggle-button-group .toggle-button [data-slot="toggle-button-group-separator"] {
+  z-index: 1;
+}
+
 /* Secondary buttons — soft blue surface matched to accent foreground text. */
 .button--secondary {
   --button-bg: var(--accent-soft);
@@ -223,5 +240,135 @@ pre,
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+}
+
+/* Accordion — compact gray cards; primary only on interactive accents. */
+.harman-accordion {
+  width: 28rem;
+  max-width: 100%;
+  font-family: inherit;
+}
+
+.harman-accordion--splitted {
+  display: flex;
+  flex-direction: column;
+  gap: var(--f-a-gap, 6px);
+  background: transparent;
+}
+
+.harman-accordion--splitted .accordion__item {
+  width: 100%;
+  min-width: 0;
+  overflow: clip;
+  border-radius: var(--f-a-radius, 10px);
+  background-color: var(--f-a-card-bg, #f4f4f5);
+  border: none;
+  box-shadow: var(--f-a-card-shadow, none);
+}
+
+.harman-accordion--splitted .accordion__item::after {
+  content: none;
+}
+
+.harman-accordion--splitted .accordion__trigger {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 14px;
+  min-height: 0;
+  font-size: var(--f-a-title-size, 14px);
+  line-height: 20px;
+  font-weight: var(--f-a-title-weight, 500);
+  letter-spacing: var(--f-a-title-tracking, normal);
+  color: var(--f-a-title-color, #18181b);
+  gap: 8px;
+}
+
+.harman-accordion--splitted .accordion__trigger[aria-expanded="true"] {
+  color: var(--primary);
+}
+
+.harman-accordion--splitted .accordion__body-inner {
+  padding: 0 14px 12px;
+  font-size: var(--f-a-body-size, 13px);
+  line-height: 20px;
+  color: var(--f-a-body-color, #71717a);
+}
+
+.harman-accordion--surface {
+  border-radius: var(--f-a-radius, 10px);
+  border: 1px solid #e4e4e7;
+  background-color: var(--f-a-card-bg, #fafafa);
+  box-shadow: var(--f-a-card-shadow, none);
+  overflow: hidden;
+}
+
+/* HeroUI surface uses large per-row radii — flatten rows so hover fills cleanly. */
+.harman-accordion--surface.accordion--surface .accordion__item:first-child .accordion__trigger,
+.harman-accordion--surface.accordion--surface
+  .accordion__item:first-child
+  [data-slot="accordion-trigger"] {
+  border-radius: 0;
+}
+
+.harman-accordion--surface.accordion--surface
+  .accordion__item:last-child:not(:has(.accordion__trigger[aria-expanded="true"]))
+  .accordion__trigger,
+.harman-accordion--surface.accordion--surface
+  .accordion__item:last-child:not(:has([data-slot="accordion-trigger"][aria-expanded="true"]))
+  [data-slot="accordion-trigger"] {
+  border-radius: 0;
+}
+
+.harman-accordion--surface.accordion--surface .accordion__item::after {
+  left: 0;
+  width: 100%;
+  background-color: #e4e4e7;
+}
+
+.harman-accordion--surface .accordion__trigger {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 14px;
+  min-height: 0;
+  font-size: var(--f-a-title-size, 14px);
+  line-height: 20px;
+  font-weight: var(--f-a-title-weight, 500);
+  letter-spacing: var(--f-a-title-tracking, normal);
+  color: var(--f-a-title-color, #18181b);
+}
+
+.harman-accordion--surface .accordion__trigger[aria-expanded="true"] {
+  color: var(--primary);
+  background: #f4f4f5;
+}
+
+.harman-accordion--surface .accordion__body-inner {
+  padding: 0 14px 12px;
+  font-size: var(--f-a-body-size, 13px);
+  line-height: 20px;
+  color: var(--f-a-body-color, #71717a);
+}
+
+/* Framer Motion owns open/close — disable HeroUI panel transition */
+.harman-accordion .accordion__panel {
+  width: 100%;
+  min-width: 0;
+  height: auto !important;
+  opacity: 1 !important;
+  overflow: hidden !important;
+  transition: none !important;
+}
+
+@media (hover: hover) {
+  .harman-accordion--splitted .accordion__trigger:hover:not([aria-expanded="true"]),
+  .harman-accordion--splitted .accordion__trigger[data-hovered="true"]:not([aria-expanded="true"]) {
+    background-color: #e4e4e7;
+  }
+
+  .harman-accordion--surface.accordion--surface .accordion__trigger:hover:not([aria-expanded="true"]),
+  .harman-accordion--surface.accordion--surface
+    .accordion__trigger[data-hovered="true"]:not([aria-expanded="true"]) {
+    background-color: #ececef;
   }
 }

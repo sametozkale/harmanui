@@ -52,6 +52,7 @@ export type CapabilityProfileId =
   | "selection-control"
   | "form-field"
   | "container-surface"
+  | "fussionary-accordion"
   | "overlay-trigger-wrapper"
   | "split-attachment"
   | "non-text-metric"
@@ -112,6 +113,11 @@ const PROFILES: Record<CapabilityProfileId, CustomizeVisibility> = {
   "interactive-control": ALL_ON,
 
   "group-filtered": profile({
+    fontFamily: false,
+    fontSize: false,
+    fontWeight: false,
+    letterSpacing: false,
+    wrap: false,
     gap: false,
     radius: false,
     customPadding: false,
@@ -125,7 +131,12 @@ const PROFILES: Record<CapabilityProfileId, CustomizeVisibility> = {
     shadowPreset: false,
     shadowColor: false,
     shadowOpacity: false,
+    duration: false,
+    easing: false,
     hover: false,
+    soundEnabled: false,
+    soundVolume: false,
+    soundCue: false,
   }),
 
   "group-unfiltered": profile({
@@ -147,6 +158,20 @@ const PROFILES: Record<CapabilityProfileId, CustomizeVisibility> = {
 
   "container-surface": profile({
     hover: false,
+  }),
+
+  "fussionary-accordion": profile({
+    wrap: false,
+    customPadding: false,
+    paddingX: false,
+    paddingY: false,
+    border: false,
+    borderWidth: false,
+    innerRadius: false,
+    hover: false,
+    soundEnabled: false,
+    soundVolume: false,
+    soundCue: false,
   }),
 
   "overlay-trigger-wrapper": profile({
@@ -254,6 +279,12 @@ const FAMILY_PROFILE: Record<string, CapabilityProfileId> = {
   link: "typography-native",
 };
 
+/** Item-specific profile overrides (variant rows in the playground). */
+const ITEM_PROFILE: Record<string, CapabilityProfileId> = {
+  "accordion:ac-default": "fussionary-accordion",
+  "accordion:ac-surface": "container-surface",
+};
+
 /** Tab-specific profile overrides for multi-tab families. */
 const TAB_PROFILE: Record<string, CapabilityProfileId> = {
   "button:button-group": "group-filtered",
@@ -318,11 +349,16 @@ export function getPreviewMotionOptions(
   familyId: string,
   tabId: string,
   customization: { motion: { hover: string } },
+  itemId?: string,
 ): PreviewMotionOptions {
-  const visibility = getCustomizeVisibility(familyId, tabId);
+  const visibility = getCustomizeVisibility(familyId, tabId, itemId);
   const tabKey = `${familyId}:${tabId}`;
+  const itemKey = itemId ? `${familyId}:${itemId}` : "";
   const profileId =
-    TAB_PROFILE[tabKey] ?? FAMILY_PROFILE[familyId] ?? "interactive-control";
+    ITEM_PROFILE[itemKey] ??
+    TAB_PROFILE[tabKey] ??
+    FAMILY_PROFILE[familyId] ??
+    "interactive-control";
 
   return {
     pressFeedback: PRESS_FEEDBACK_PROFILES.has(profileId),
@@ -333,10 +369,15 @@ export function getPreviewMotionOptions(
 export function getCustomizeVisibility(
   familyId: string,
   tabId: string,
+  itemId?: string,
 ): CustomizeVisibility {
   const tabKey = `${familyId}:${tabId}`;
+  const itemKey = itemId ? `${familyId}:${itemId}` : "";
   const profileId =
-    TAB_PROFILE[tabKey] ?? FAMILY_PROFILE[familyId] ?? "interactive-control";
+    ITEM_PROFILE[itemKey] ??
+    TAB_PROFILE[tabKey] ??
+    FAMILY_PROFILE[familyId] ??
+    "interactive-control";
   const base = PROFILES[profileId];
   const tabOverrides = CONTROL_OVERRIDES[tabKey];
   const familyOverrides = CONTROL_OVERRIDES[familyId];

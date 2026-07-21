@@ -23,8 +23,8 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md">
-      <div className="grid h-16 w-full grid-cols-[1fr_auto_1fr] items-center px-12">
-        <nav aria-label="Catalog" className="justify-self-start">
+      <div className="relative flex h-16 w-full items-center justify-between px-12">
+        <nav aria-label="Catalog" className="relative z-10">
           <div className="inline-flex h-9 gap-0.5 rounded-xl bg-[#fafafa] p-0.5">
             {SECTIONS.map((section) => {
               const active = isSectionActive(pathname, section.href);
@@ -46,13 +46,17 @@ export function SiteHeader() {
           </div>
         </nav>
 
-        <Link href="/" className="flex items-center justify-self-center">
-          <HarmanLogo />
-        </Link>
-
-        <div className="justify-self-end">
+        <div className="relative z-10">
           <InstallInitButton />
         </div>
+
+        <Link
+          href="/"
+          className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center"
+          aria-label="Harman UI home"
+        >
+          <HarmanLogo />
+        </Link>
       </div>
     </header>
   );

@@ -72,16 +72,23 @@ export const EXISTING_RENDERERS: Record<
     const p = item.props;
     if (component === "ButtonGroup") {
       const groupCtx = buttonGroupPreviewCtx(ctx);
+      const groupProps = {
+        variant: asEnum(p.variant),
+        size: asEnum(p.size),
+        ...(Object.keys(groupCtx.style).length > 0 ? { style: groupCtx.style } : {}),
+        ...(groupCtx.className ? { className: groupCtx.className } : {}),
+      };
       return (
-        <ButtonGroup
-          variant={asEnum(p.variant)}
-          size={asEnum(p.size)}
-          style={groupCtx.style}
-          className={groupCtx.className}
-        >
-          <Button>One</Button>
-          <Button>Two</Button>
-          <Button>Three</Button>
+        <ButtonGroup {...groupProps}>
+          <Button>First</Button>
+          <Button>
+            <ButtonGroup.Separator />
+            Second
+          </Button>
+          <Button>
+            <ButtonGroup.Separator />
+            Third
+          </Button>
         </ButtonGroup>
       );
     }

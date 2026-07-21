@@ -13,6 +13,7 @@ import {
   makeFamily,
   familyTab,
 } from "./_builders";
+import { TYPOGRAPHY_DEMO, TYPOGRAPHY_HEADING_LABELS } from "./typography-content";
 
 export const NEW_FAMILY_DEFINITIONS = [
   makeFamily({
@@ -627,22 +628,84 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "typography",
     name: "Typography",
     component: "Typography",
-    description: "Semantic text styles for headings, body copy, and code.",
+    description: "Semantic text styles for headings, body copy, code, and prose.",
     groups: [
       g(
-        "types",
-        "Types",
+        "headings",
+        "Headings",
         [
-          it("ty-h1", "Heading 1", { variant: "h1", label: "Page title" }),
-          it("ty-h2", "Heading 2", { variant: "h2", label: "Section title" }),
-          it("ty-body", "Body", { variant: "body", label: "Body text for paragraphs." }),
-          it("ty-code", "Code", { variant: "code", label: "npm install" }),
+          it("ty-h1", "Level 1", { variant: "h1", label: TYPOGRAPHY_HEADING_LABELS.h1 }),
+          it("ty-h2", "Level 2", { variant: "h2", label: TYPOGRAPHY_HEADING_LABELS.h2 }),
+          it("ty-h3", "Level 3", { variant: "h3", label: TYPOGRAPHY_HEADING_LABELS.h3 }),
+          it("ty-h4", "Level 4", { variant: "h4", label: TYPOGRAPHY_HEADING_LABELS.h4 }),
+          it("ty-h5", "Level 5", { variant: "h5", label: TYPOGRAPHY_HEADING_LABELS.h5 }),
+          it("ty-h6", "Level 6", { variant: "h6", label: TYPOGRAPHY_HEADING_LABELS.h6 }),
         ],
         "grid",
       ),
+      g("paragraphs", "Paragraphs", [
+        it("ty-body", "Base", { variant: "body", label: TYPOGRAPHY_DEMO.paragraph }),
+        it("ty-body-sm", "Small", {
+          variant: "body",
+          size: "sm",
+          color: "muted",
+          label: TYPOGRAPHY_DEMO.paragraphMuted,
+        }),
+        it("ty-body-xs", "Extra small", {
+          variant: "body",
+          size: "xs",
+          label: "Caption or footnote text.",
+        }),
+      ]),
+      g("code", "Code", [
+        it("ty-code", "Inline code", { variant: "code", label: TYPOGRAPHY_DEMO.codeInstall }),
+      ]),
+      g("prose", "Prose", [it("ty-prose", "Composition", { variant: "prose" })]),
       g("colors", "Colors", [
         it("ty-default", "Default", { variant: "body", color: "default", label: "Default text" }),
         it("ty-muted", "Muted", { variant: "body", color: "muted", label: "Muted text" }),
+      ]),
+      g(
+        "weights",
+        "Weights",
+        [
+          it("ty-weight-normal", "Normal", { variant: "body", weight: "normal", label: "Normal weight" }),
+          it("ty-weight-medium", "Medium", { variant: "body", weight: "medium", label: "Medium weight" }),
+          it("ty-weight-semibold", "Semibold", {
+            variant: "body",
+            weight: "semibold",
+            label: "Semibold weight",
+          }),
+          it("ty-weight-bold", "Bold", { variant: "body", weight: "bold", label: "Bold weight" }),
+        ],
+        "grid",
+      ),
+      g(
+        "align",
+        "Align",
+        [
+          it("ty-align-start", "Start", { variant: "body", align: "start", label: "Start aligned text." }),
+          it("ty-align-center", "Center", {
+            variant: "body",
+            align: "center",
+            label: "Center aligned text.",
+          }),
+          it("ty-align-end", "End", { variant: "body", align: "end", label: "End aligned text." }),
+          it("ty-align-justify", "Justify", {
+            variant: "body",
+            align: "justify",
+            label:
+              "Justified text spreads evenly between the left and right edges when the line has enough words.",
+          }),
+        ],
+        "grid",
+      ),
+      g("truncate", "Truncate", [
+        it("ty-truncate", "Truncate", {
+          variant: "body",
+          truncate: true,
+          label: TYPOGRAPHY_DEMO.truncate,
+        }),
       ]),
     ],
   }),
@@ -701,7 +764,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     description: "A vertically stacked set of expandable sections.",
     groups: [
       g("variants", "Variants", [
-        it("ac-default", "Default", { variant: "default" }),
+        it("ac-default", "Splitted", { variant: "default" }),
         it("ac-surface", "Surface", { variant: "surface" }),
       ]),
     ],
@@ -715,7 +778,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     tabs: [
       familyTab("disclosure", "Disclosure", "Disclosure", [
         g("examples", "Examples", [
-          it("dc-default", "Default", { label: "Shipping details" }),
+          it("dc-default", "Default", {}),
         ]),
       ]),
       familyTab("disclosure-group", "Disclosure Group", "DisclosureGroup", [

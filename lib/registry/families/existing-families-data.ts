@@ -92,8 +92,10 @@ const buttonFamily: ComponentFamily = {
           items: [
             { id: "group-primary", label: "Primary", props: { variant: "primary" } },
             { id: "group-secondary", label: "Secondary", props: { variant: "secondary" } },
+            { id: "group-tertiary", label: "Tertiary", props: { variant: "tertiary" } },
             { id: "group-outline", label: "Outline", props: { variant: "outline" } },
             { id: "group-ghost", label: "Ghost", props: { variant: "ghost" } },
+            { id: "group-danger", label: "Danger", props: { variant: "danger" } },
           ],
         },
         {
@@ -101,9 +103,9 @@ const buttonFamily: ComponentFamily = {
           label: "Sizes",
           layout: "grid",
           items: [
-            { id: "group-sm", label: "Small", props: { variant: "outline", size: "sm" } },
-            { id: "group-md", label: "Medium", props: { variant: "outline", size: "md" } },
-            { id: "group-lg", label: "Large", props: { variant: "outline", size: "lg" } },
+            { id: "group-sm", label: "Small", props: { variant: "secondary", size: "sm" } },
+            { id: "group-md", label: "Medium", props: { variant: "secondary", size: "md" } },
+            { id: "group-lg", label: "Large", props: { variant: "secondary", size: "lg" } },
           ],
         },
       ],
