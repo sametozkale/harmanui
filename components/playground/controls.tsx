@@ -5,8 +5,16 @@
 "use client";
 
 import { useId, useState, type ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Switch as HeroSwitch, Slider as HeroSlider } from "@heroui/react";
 import { ChevronDown } from "@/lib/icons";
+import {
+  PLAYGROUND_CUSTOMIZE_TAB_MENU_CLASS,
+  playgroundTabMenuButtonClass,
+} from "./constants";
+
+const SIDEBAR_SECTION_EASE = [0.2, 0, 0, 1] as const;
+const SIDEBAR_SECTION_TRANSITION = { duration: 0.28, ease: SIDEBAR_SECTION_EASE };
 
 /* --------------------------------- Row ---------------------------------- */
 
@@ -96,11 +104,7 @@ export function Segmented<T extends string>({
 }) {
   return (
     <ControlRow label={label ?? ""}>
-      <div
-        role="group"
-        aria-label={label}
-        className="flex gap-0.5 rounded-xl bg-zinc-100 p-0.5"
-      >
+      <div role="group" aria-label={label} className={PLAYGROUND_CUSTOMIZE_TAB_MENU_CLASS}>
         {options.map((opt) => {
           const active = opt.value === value;
           return (
@@ -109,11 +113,7 @@ export function Segmented<T extends string>({
               type="button"
               aria-pressed={active}
               onClick={() => onChange(opt.value)}
-              className={`flex-1 cursor-pointer rounded-[10px] px-2.5 py-1.5 text-[12px] font-medium transition active:scale-[0.97] ${
-                active
-                  ? "bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.08)]"
-                  : "text-zinc-500 hover:text-zinc-800"
-              }`}
+              className={playgroundTabMenuButtonClass(active, "flex-1")}
             >
               {opt.label}
             </button>
@@ -190,22 +190,29 @@ export function Accordion({
         <span className="font-title flex-1 text-[14px] font-semibold text-zinc-900">
           {title}
         </span>
-        <ChevronDown
-          className={`size-4 shrink-0 text-zinc-400 opacity-0 transition-[opacity,transform] duration-200 group-hover/customize-panel:opacity-100 ${
-            open ? "rotate-180" : ""
-          }`}
-          strokeWidth={2}
-        />
+        <motion.span
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={SIDEBAR_SECTION_TRANSITION}
+          className="inline-flex opacity-0 transition-opacity duration-200 group-hover/customize-panel:opacity-100"
+        >
+          <ChevronDown className="size-4 shrink-0 text-zinc-400" strokeWidth={2} />
+        </motion.span>
       </button>
-      <div
-        id={id}
-        className="grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.2,0,0,1)]"
-        style={{ gridTemplateRows: open ? "minmax(0, max-content)" : "0fr" }}
-      >
-        <div className="min-h-0 overflow-hidden">
-          <div className="space-y-4 pb-3 pt-3 pl-2.5 pr-0.5">{children}</div>
-        </div>
-      </div>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            id={id}
+            key="section"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={SIDEBAR_SECTION_TRANSITION}
+            className="overflow-hidden"
+          >
+            <div className="space-y-4 pb-3 pt-3 pl-2.5 pr-0.5">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

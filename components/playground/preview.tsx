@@ -9,13 +9,14 @@
 
 import { useMemo, type PointerEvent } from "react";
 import type { CSSProperties } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Header, ListBox, Select } from "@heroui/react";
 import type { ComponentFamily, PreviewItem } from "@/lib/registry/types";
 import type { Customization } from "@/lib/theme/customization";
 import { renderPreview } from "@/components/registry/render";
 import { Reset } from "@/lib/icons";
 import { playPlaygroundSound, shouldPlayPreviewInteractionSound } from "@/lib/sound";
-import { PLAYGROUND_SURFACE_CLASS, PLAYGROUND_CONTROL_HEIGHT_CLASS, PLAYGROUND_CONTROL_HEIGHT_IMPORTANT_CLASS } from "./constants";
+import { PLAYGROUND_SURFACE_CLASS, PLAYGROUND_CONTROL_HEIGHT_CLASS, PLAYGROUND_CONTROL_HEIGHT_IMPORTANT_CLASS, PLAYGROUND_TAB_MENU_COMPACT_CLASS, playgroundTabMenuButtonClass } from "./constants";
 
 const previewPickerTriggerClass =
   `${PLAYGROUND_CONTROL_HEIGHT_IMPORTANT_CLASS} !min-w-[148px] !cursor-pointer !rounded-xl !border-0 !bg-white !py-2 !pl-3 !pr-7 !text-[13px] !font-medium !text-zinc-700 !shadow-[0_1px_2px_rgba(0,0,0,0.04)] !ring-1 !ring-[#f4f4f4] transition hover:!bg-white hover:!ring-[#eee] data-[focus-visible]:!bg-white data-[focus-visible]:!ring-2 data-[focus-visible]:!ring-zinc-900/10`;
@@ -75,35 +76,45 @@ export function PreviewTabMenu({
   onTabChange: (id: string) => void;
   className?: string;
 }) {
-  if (family.tabs.length <= 1) return null;
-
+  const showTabs = family.tabs.length > 1;
   const tab = family.tabs.find((t) => t.id === activeTabId) ?? family.tabs[0];
 
   return (
-    <div
-      className={`mb-4 inline-flex h-9 w-fit shrink-0 gap-0.5 self-start rounded-xl bg-[#fafafa] p-0.5 ${className}`}
-      role="tablist"
-      aria-label={`${family.name} variants`}
-    >
-      {family.tabs.map((t) => {
-        const active = t.id === tab.id;
-        return (
-          <button
-            key={t.id}
-            type="button"
-            role="tab"
-            aria-selected={active}
-            onClick={() => onTabChange(t.id)}
-            className={`flex h-8 cursor-pointer items-center rounded-[10px] px-3.5 text-[12.5px] font-medium tracking-[-0.01em] transition active:scale-[0.98] ${
-              active
-                ? "bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
-                : "text-zinc-500 hover:text-zinc-800"
-            }`}
+    <div className={`min-w-0 ${className}`}>
+      <AnimatePresence initial={false}>
+        {showTabs && (
+          <motion.div
+            key="tab-menu"
+            initial={{ height: 0, opacity: 0, marginBottom: 0 }}
+            animate={{ height: "auto", opacity: 1, marginBottom: 16 }}
+            exit={{ height: 0, opacity: 0, marginBottom: 0 }}
+            transition={{ duration: 0.24, ease: [0.2, 0, 0, 1] }}
+            className="overflow-hidden"
           >
-            {t.label}
-          </button>
-        );
-      })}
+            <div
+              className={PLAYGROUND_TAB_MENU_COMPACT_CLASS}
+              role="tablist"
+              aria-label={`${family.name} variants`}
+            >
+              {family.tabs.map((t) => {
+                const active = t.id === tab.id;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => onTabChange(t.id)}
+                    className={playgroundTabMenuButtonClass(active)}
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
