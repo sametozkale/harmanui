@@ -109,7 +109,7 @@ export function Segmented<T extends string>({
               type="button"
               aria-pressed={active}
               onClick={() => onChange(opt.value)}
-              className={`flex-1 rounded-[10px] px-2.5 py-1.5 text-[12px] font-medium transition active:scale-[0.97] ${
+              className={`flex-1 cursor-pointer rounded-[10px] px-2.5 py-1.5 text-[12px] font-medium transition active:scale-[0.97] ${
                 active
                   ? "bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.08)]"
                   : "text-zinc-500 hover:text-zinc-800"
@@ -182,7 +182,7 @@ export function Accordion({
         onClick={() => {
           if (expanded === undefined) setOpenInternal((current) => !current);
         }}
-        className="flex w-full items-center gap-2.5 rounded-xl p-2.5 text-left transition hover:bg-zinc-100/80"
+        className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl p-2.5 text-left transition hover:bg-zinc-100/80"
       >
         <span className={`flex size-5 items-center justify-center ${accent}`}>
           {icon}

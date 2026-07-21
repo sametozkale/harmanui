@@ -156,34 +156,71 @@ pre,
   border-radius: 0.375rem;
 }
 
-/* ------------------------------------------------------------------ *
- * About page (dark editorial) — hero entrance + scoped selection.
- * ------------------------------------------------------------------ */
-@keyframes lp-rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
+/* Textarea — replace native resize grip with a custom SVG handle that fits
+   inside the rounded corner and stays visible against the field background. */
+.textarea {
+  resize: vertical;
+}
+
+.textarea::-webkit-resizer {
+  display: none;
+}
+
+.textfield:has(.textarea) {
+  position: relative;
+}
+
+.textfield:has(.textarea)::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 12px;
+  height: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cline x1='11' y1='1' x2='1' y2='11' stroke='%23a1a1aa' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='11' y1='5' x2='5' y2='11' stroke='%23a1a1aa' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='11' y1='9' x2='9' y2='11' stroke='%23a1a1aa' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+
+
+/* Select / Autocomplete / Combobox popover — match border-radius to the
+   field trigger instead of using the oversized 3xl overlay default. */
+.select__popover,
+.autocomplete__popover,
+.combo-box__popover {
+  border-radius: var(--radius-field, 0.75rem) !important;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    0 0 1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ListBox items — nested radius scales with the popover container. */
+.select__popover .list-box-item,
+.autocomplete__popover .list-box-item,
+.combo-box__popover .list-box-item {
+  border-radius: calc(var(--radius-field, 0.75rem) - 0.0625rem) !important;
+}
+
+/* ListBox item hover — soft grey highlight inside select/autocomplete popovers. */
+@media (hover: hover) {
+  .list-box-item:hover,
+  .list-box-item[data-hovered="true"] {
+    background-color: #f9f9f9 !important;
   }
 }
 
-.lp-rise {
-  animation: lp-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.lp ::selection {
-  background: #f0efeb;
-  color: #1a1a1a;
+/* Disabled elements — ensure not-allowed cursor is visible even when
+   pointer-events is none by setting cursor on the parent wrapper. */
+:disabled,
+[data-disabled="true"],
+[aria-disabled="true"] {
+  cursor: not-allowed !important;
+  pointer-events: auto !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lp-rise {
-    animation: none;
-  }
-
   html {
     scroll-behavior: auto;
   }

@@ -76,7 +76,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { InboxIcon } from "@hugeicons/core-free-icons";
 import { PreviewIcon } from "@/components/icons";
 import type { PreviewItem } from "@/lib/registry/types";
-import { asEnum, type SpecCtx } from "./_spec";
+import { asEnum, buttonGroupPreviewCtx, type SpecCtx } from "./_spec";
 import {
   COLOR_PREVIEW_DEFAULT,
   COLOR_PREVIEW_SWATCHES,
@@ -1444,20 +1444,24 @@ export function renderSwitchGroup(_component: string, item: PreviewItem, ctx: Sp
 
 export function renderToggleButtonGroup(_component: string, item: PreviewItem, ctx: SpecCtx): ReactNode {
   const p = item.props;
+  const groupCtx = buttonGroupPreviewCtx(ctx);
+  const variant = asEnum(p.variant ?? "default");
   return (
     <ToggleButtonGroup
       size={asEnum(p.size)}
       defaultSelectedKeys={["center"]}
-      style={ctx.style}
-      className={ctx.className}
+      style={groupCtx.style}
+      className={groupCtx.className}
     >
-      <ToggleButton id="left" variant={asEnum(p.variant)}>
+      <ToggleButton id="left" variant={variant}>
         Left
       </ToggleButton>
-      <ToggleButton id="center" variant={asEnum(p.variant)}>
+      <ToggleButtonGroup.Separator />
+      <ToggleButton id="center" variant={variant}>
         Center
       </ToggleButton>
-      <ToggleButton id="right" variant={asEnum(p.variant)}>
+      <ToggleButtonGroup.Separator />
+      <ToggleButton id="right" variant={variant}>
         Right
       </ToggleButton>
     </ToggleButtonGroup>

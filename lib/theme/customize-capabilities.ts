@@ -258,7 +258,7 @@ const FAMILY_PROFILE: Record<string, CapabilityProfileId> = {
 const TAB_PROFILE: Record<string, CapabilityProfileId> = {
   "button:button-group": "group-filtered",
   "button:icon-button": "interactive-control",
-  "toggle-button:toggle-button-group": "group-unfiltered",
+  "toggle-button:toggle-button-group": "group-filtered",
   "switch:switch-group": "group-unfiltered",
   "checkbox:checkbox-group": "group-unfiltered",
   "progress-circle:progress-bar": "non-text-metric",

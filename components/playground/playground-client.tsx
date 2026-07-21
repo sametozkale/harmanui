@@ -90,6 +90,7 @@ export function PlaygroundClient() {
     const resolved = resolveFamilyFromUrl(f, t);
     if (resolved) {
       const { familyId: nextFamily, tabId: nextTab } = resolved;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- post-mount URL hydration
       setFamilyId(nextFamily);
       setTabId(nextTab);
       setItemId(

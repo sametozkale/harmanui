@@ -3,7 +3,7 @@
  */
 
 import type { PreviewItem } from "@/lib/registry/types";
-import { attrs, codeCtx } from "./_code";
+import { attrs, codeCtx, buttonGroupCodeCtx } from "./_code";
 import {
   COLOR_PREVIEW_DEFAULT,
   colorSwatchPickerItemsJsx,
@@ -332,16 +332,20 @@ function build(component: string, p: PreviewItem["props"], ctx: SpecCtx): CodeBu
           `      </SwitchGroup>`,
       };
 
-    case "ToggleButtonGroup":
+    case "ToggleButtonGroup": {
+      const c = buttonGroupCodeCtx(ctx.customization, ctx.motionOptions);
       return {
         hero: ["ToggleButtonGroup", "ToggleButton"],
         jsx:
           `<ToggleButtonGroup\n${attrs([["size", p.size], ["defaultSelectedKeys", '["center"]']])}\n${c.classAttr}\n${c.styleAttr}\n      >\n` +
-          `        <ToggleButton id="left" variant="${p.variant ?? "outline"}">Left</ToggleButton>\n` +
-          `        <ToggleButton id="center" variant="${p.variant ?? "outline"}">Center</ToggleButton>\n` +
-          `        <ToggleButton id="right" variant="${p.variant ?? "outline"}">Right</ToggleButton>\n` +
+          `        <ToggleButton id="left" variant="${p.variant ?? "default"}">Left</ToggleButton>\n` +
+          `        <ToggleButtonGroup.Separator />\n` +
+          `        <ToggleButton id="center" variant="${p.variant ?? "default"}">Center</ToggleButton>\n` +
+          `        <ToggleButtonGroup.Separator />\n` +
+          `        <ToggleButton id="right" variant="${p.variant ?? "default"}">Right</ToggleButton>\n` +
           `      </ToggleButtonGroup>`,
       };
+    }
 
     case "InputGroup":
       return {

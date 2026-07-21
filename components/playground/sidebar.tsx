@@ -7,7 +7,7 @@
  */
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { SIDEBAR } from "@/lib/registry/registry";
 import { CategoryIcon } from "@/components/icons";
 import { ChevronDown } from "@/lib/icons";
@@ -48,13 +48,11 @@ export function Sidebar({
     }).filter((cat) => cat.items.length > 0);
   }, [searchQuery, searching]);
 
-  // Keep the active family's category visible when navigating via URL or tabs.
-  useEffect(() => {
-    const catId = categoryIdForFamily(activeId);
-    if (catId) {
-      setOpen((prev) => (prev[catId] ? prev : { ...prev, [catId]: true }));
-    }
-  }, [activeId]);
+  const activeCategoryId = categoryIdForFamily(activeId);
+  const effectiveOpen = useMemo(() => {
+    if (!activeCategoryId || open[activeCategoryId]) return open;
+    return { ...open, [activeCategoryId]: true };
+  }, [open, activeCategoryId]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -71,7 +69,7 @@ export function Sidebar({
           <p className="px-2.5 py-3 text-[13px] text-zinc-400">No components match your search.</p>
         ) : (
           filteredSidebar.map((cat) => {
-            const expanded = searching ? true : (open[cat.id] ?? false);
+            const expanded = searching ? true : (effectiveOpen[cat.id] ?? false);
             const panelId = `sidebar-${cat.id}`;
 
             return (
@@ -83,7 +81,7 @@ export function Sidebar({
                   onClick={() =>
                     setOpen((prev) => ({ ...prev, [cat.id]: !prev[cat.id] }))
                   }
-                  className="flex w-full items-center gap-2.5 rounded-xl p-2.5 text-left transition hover:bg-white/70"
+                  className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl p-2.5 text-left transition hover:bg-white/70"
                 >
                   <span
                     className={`flex size-5 shrink-0 items-center justify-center ${cat.accent}`}
@@ -122,9 +120,9 @@ export function Sidebar({
                               aria-current={active ? "page" : undefined}
                               className={`group relative flex w-full items-center justify-between gap-3 rounded-xl py-1.5 pr-2.5 pl-10 text-left text-[14px] whitespace-nowrap transition ${
                                 active
-                                  ? "bg-white font-medium text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                                  ? "cursor-pointer bg-white font-medium text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
                                   : ready
-                                    ? "text-zinc-400 hover:bg-white/70 hover:text-zinc-700"
+                                    ? "cursor-pointer text-zinc-400 hover:bg-white/70 hover:text-zinc-700"
                                     : "cursor-not-allowed text-zinc-300"
                               }`}
                             >

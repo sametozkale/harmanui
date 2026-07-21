@@ -1,3 +1,9 @@
+/** Shared height for preview picker, panel search inputs, and reset control. */
+export const PLAYGROUND_CONTROL_HEIGHT_CLASS = "h-9 min-h-9";
+
+/** Same as above, for HeroUI trigger overrides that need !important. */
+export const PLAYGROUND_CONTROL_HEIGHT_IMPORTANT_CLASS = "!h-9 !min-h-9";
+
 /** Shared #fafafa panel shell — sidebars + preview stage use the same inset. */
 export const PLAYGROUND_SURFACE_CLASS = "rounded-3xl bg-[#fafafa] p-5";
 

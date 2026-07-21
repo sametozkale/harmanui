@@ -1,6 +1,7 @@
 "use client";
 
 import { ClearSearchIcon, SearchIcon } from "@/components/icons";
+import { PLAYGROUND_CONTROL_HEIGHT_CLASS } from "./constants";
 
 export function SidebarSearch({
   value,
@@ -16,8 +17,8 @@ export function SidebarSearch({
   const hasValue = value.length > 0;
 
   return (
-    <div className="relative z-10 mb-3 shrink-0 bg-[#fafafa] pb-1">
-      <div className="relative">
+    <div className="relative z-10 mb-3 shrink-0 overflow-visible bg-[#fafafa] px-0.5 pt-0.5 pb-1.5">
+      <div className="relative overflow-visible">
         <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
         <input
           type="text"
@@ -27,7 +28,7 @@ export function SidebarSearch({
           onChange={(event) => onChange(event.target.value)}
           placeholder={placeholder}
           aria-label={ariaLabel}
-          className={`h-9 w-full rounded-xl bg-white pl-9 text-[13px] text-zinc-700 ring-1 ring-zinc-100 transition placeholder:text-zinc-400 focus:ring-zinc-300 focus:outline-none ${
+          className={`box-border ${PLAYGROUND_CONTROL_HEIGHT_CLASS} w-full appearance-none rounded-xl border border-solid border-[#f4f4f4] bg-white pl-9 text-[13px] text-zinc-700 shadow-none transition-[border-color] placeholder:text-zinc-400 hover:border-[#eee] focus:border-[#eee] focus:outline-none ${
             hasValue ? "pr-9" : "pr-3"
           }`}
         />

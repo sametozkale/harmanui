@@ -39,7 +39,7 @@ const buttonFamily: ComponentFamily = {
   id: "button",
   name: "Button",
   description:
-    "Triggers an action or event. Built on React Aria's Button for full keyboard and screen-reader support, with seven visual variants and three sizes.",
+    "Primary actions like save, submit, and confirm — seven variants and three sizes.",
   install: `npx ${KIT_NAME} add button`,
   githubPath: "components/registry/button/Button.tsx",
   tabs: [
@@ -147,7 +147,7 @@ const toggleButtonFamily: ComponentFamily = {
   id: "toggle-button",
   name: "Toggle Button",
   description:
-    "A button that toggles between selected and unselected states, plus grouped variants for segmented controls.",
+    "Toggle filters, formatting, or view modes with clear on/off selected state.",
   install: `npx ${KIT_NAME} add toggle-button`,
   githubPath: "components/registry/toggle-button/ToggleButton.tsx",
   tabs: [
@@ -169,14 +169,13 @@ const toggleButtonFamily: ComponentFamily = {
     ]),
     familyTab("toggle-button-group", "Toggle Button Group", "ToggleButtonGroup", [
       g("variants", "Variants", [
-        it("tbg-primary", "Primary", { variant: "primary", size: "md" }),
-        it("tbg-secondary", "Secondary", { variant: "secondary", size: "md" }),
-        it("tbg-outline", "Outline", { variant: "outline", size: "md" }),
+        it("tbg-default", "Default", { variant: "default", size: "md" }),
+        it("tbg-ghost", "Ghost", { variant: "ghost", size: "md" }),
       ]),
       g("sizes", "Sizes", [
-        it("tbg-sm", "Small", { variant: "outline", size: "sm" }),
-        it("tbg-md", "Medium", { variant: "outline", size: "md" }),
-        it("tbg-lg", "Large", { variant: "outline", size: "lg" }),
+        it("tbg-sm", "Small", { variant: "default", size: "sm" }),
+        it("tbg-md", "Medium", { variant: "default", size: "md" }),
+        it("tbg-lg", "Large", { variant: "default", size: "lg" }),
       ]),
     ]),
   ],
@@ -185,8 +184,7 @@ const toggleButtonFamily: ComponentFamily = {
 const switchFamily: ComponentFamily = {
   id: "switch",
   name: "Switch",
-  description:
-    "A control that toggles a single setting on or off, with optional grouped layouts.",
+  description: "Turn settings like notifications or dark mode on or off at a glance.",
   install: `npx ${KIT_NAME} add switch`,
   githubPath: "components/registry/switch/Switch.tsx",
   tabs: [
@@ -240,7 +238,7 @@ const checkboxFamily: ComponentFamily = {
 const progressFamily: ComponentFamily = {
   id: "progress-circle",
   name: "Progress",
-  description: "Indicators of progress toward completion, in circular or linear form.",
+  description: "Track task, upload, or install progress as a ring or horizontal bar.",
   install: `npx ${KIT_NAME} add progress-circle`,
   githubPath: "components/registry/progress-circle/ProgressCircle.tsx",
   tabs: [
@@ -287,7 +285,7 @@ const extraFamilies: ComponentFamily[] = [
     id: "radio-group",
     name: "Radio Group",
     component: "RadioGroup",
-    description: "A set of checkable options where only one may be selected.",
+    description: "Pick exactly one option from a short list, like plan or payment type.",
     groups: [
       g(
         "variants",
@@ -304,7 +302,7 @@ const extraFamilies: ComponentFamily[] = [
     id: "chip",
     name: "Chip",
     component: "Chip",
-    description: "A compact element representing a tag, category or attribute.",
+    description: "Tag items with status, category, or filters in a compact pill.",
     groups: [
       g("variants", "Variants", [
         it("ch-primary", "Primary", { variant: "primary", label: "Primary" }),
@@ -330,8 +328,7 @@ const extraFamilies: ComponentFamily[] = [
     id: "avatar",
     name: "Avatar",
     component: "Avatar",
-    description:
-      "A visual representation of a user or entity. Photo via Avatar.Image; initials via Avatar.Fallback.",
+    description: "Represent people or teams with a photo, initials, or colored fallback.",
     groups: [
       g("basic", "Basic", [
         it("av-photo", "Photo", {
@@ -405,7 +402,7 @@ const extraFamilies: ComponentFamily[] = [
     id: "alert",
     name: "Alert",
     component: "Alert",
-    description: "A prominent message that communicates status or feedback.",
+    description: "Surface success, warnings, or errors inline without blocking the page.",
     groups: [
       g(
         "statuses",
@@ -425,7 +422,7 @@ const extraFamilies: ComponentFamily[] = [
     id: "spinner",
     name: "Spinner",
     component: "Spinner",
-    description: "An indeterminate loading indicator.",
+    description: "Signal that content or an action is still loading.",
     groups: [
       g("sizes", "Sizes", [
         it("sp-sm", "Small", { size: "sm" }),
@@ -482,7 +479,7 @@ const extraFamilies: ComponentFamily[] = [
     id: "card",
     name: "Card",
     component: "Card",
-    description: "A surface that groups related content and actions.",
+    description: "Group related content, media, and actions in a scannable block.",
     groups: [
       g(
         "variants",
@@ -500,7 +497,7 @@ const extraFamilies: ComponentFamily[] = [
     id: "link",
     name: "Link",
     component: "Link",
-    description: "A navigational hyperlink with accessible focus behavior.",
+    description: "Navigate to pages, docs, or external URLs with accessible focus styles.",
     groups: [
       g("examples", "Examples", [
         it("lk-default", "Default", { label: "View documentation" }),

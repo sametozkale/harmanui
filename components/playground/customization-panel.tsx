@@ -698,7 +698,7 @@ export function CustomizationPanelSections({
                             sound: { ...c.sound, cue: opt.value, enabled: true },
                           });
                         }}
-                        className={`rounded-lg px-2.5 py-1.5 text-left text-[12px] font-medium transition active:scale-[0.97] ${
+                        className={`cursor-pointer rounded-lg px-2.5 py-1.5 text-left text-[12px] font-medium transition active:scale-[0.97] ${
                           active
                             ? "bg-zinc-900 text-white"
                             : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900"

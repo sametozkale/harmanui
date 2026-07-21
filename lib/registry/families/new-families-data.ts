@@ -33,8 +33,7 @@ export const NEW_FAMILY_DEFINITIONS = [
   {
     id: "input",
     name: "Input",
-    description:
-      "Single-line text inputs and grouped inputs with prefix or suffix adornments.",
+    description: "Collect short text like email, username, or search queries.",
     install: `npx ${KIT_NAME} add input`,
     githubPath: "components/registry/input/Input.tsx",
     tabs: [
@@ -112,7 +111,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "input-otp",
     name: "OTP Input",
     component: "InputOTP",
-    description: "A one-time password input with grouped character slots.",
+    description: "Capture verification codes with a slot for each digit.",
     groups: [
       g("variants", "Variants", [
         it("otp-primary", "Primary", { variant: "primary" }),
@@ -132,7 +131,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "select",
     name: "Select",
     component: "Select",
-    description: "A dropdown for choosing a single value from a list.",
+    description: "Choose one option from a list when dropdown space is limited.",
     groups: [
       g("variants", "Variants", [
         it("sl-primary", "Primary", { variant: "primary", label: "Country" }),
@@ -160,7 +159,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "autocomplete",
     name: "Autocomplete",
     component: "Autocomplete",
-    description: "A searchable select with typeahead filtering.",
+    description: "Search and pick from long lists like countries, cities, or users.",
     groups: [
       g("variants", "Variants", [
         it("ac-primary", "Primary", { variant: "primary", label: "City" }),
@@ -260,8 +259,7 @@ export const NEW_FAMILY_DEFINITIONS = [
   {
     id: "color",
     name: "Color",
-    description:
-      "Color pickers, fields, and swatch palettes for selecting and editing colors.",
+    description: "Pick brand, theme, or accent colors via picker, field, or swatches.",
     install: `npx ${KIT_NAME} add color-picker`,
     githubPath: "components/registry/color-picker/ColorPicker.tsx",
     tabs: [
@@ -312,8 +310,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "date-range-picker",
     name: "Date Range Picker",
     component: "DateRangePicker",
-    description:
-      "A composable start/end date picker built on DateField and RangeCalendar.",
+    description: "Select start and end dates for bookings, trips, or date ranges.",
     groups: [
       g("states", "States", [
         it("drp-default", "Default", { label: "Trip dates" }),
@@ -335,7 +332,7 @@ export const NEW_FAMILY_DEFINITIONS = [
   {
     id: "form-primitives",
     name: "Form Primitives",
-    description: "Low-level form labels, descriptions, and validation messages.",
+    description: "Labels, hints, and error text that keep forms clear and accessible.",
     install: `npx ${KIT_NAME} add form-primitives`,
     githubPath: "components/registry/form-primitives/FormPrimitives.tsx",
     tabs: [
@@ -409,7 +406,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "popover",
     name: "Popover",
     component: "Popover",
-    description: "A floating panel anchored to a trigger element.",
+    description: "Show extra controls or details without leaving the current context.",
     groups: [
       g("examples", "Examples", [
         it("po-default", "Default", { label: "Open popover" }),
@@ -431,7 +428,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "dropdown",
     name: "Dropdown Menu",
     component: "Dropdown",
-    description: "A menu triggered by a button, with keyboard navigation.",
+    description: "Compact action menus for edit, share, delete, and more.",
     groups: [
       g("examples", "Examples", [
         it("dd-default", "Default", { label: "Actions" }),
@@ -497,7 +494,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "pagination",
     name: "Pagination",
     component: "Pagination",
-    description: "Navigate between pages of content.",
+    description: "Move through long lists or tables one page at a time.",
     groups: [
       g("sizes", "Sizes", SIZES_SM_MD_LG.map((s) => ({
         id: `pg-${s.id}`,
@@ -522,7 +519,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "toolbar",
     name: "Toolbar",
     component: "Toolbar",
-    description: "A container grouping related controls and actions.",
+    description: "Group formatting tools or related actions in one row.",
     groups: [
       g("orientation", "Orientation", [
         it("tb-h", "Horizontal", { orientation: "horizontal" }),
@@ -542,7 +539,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "table",
     name: "Table",
     component: "Table",
-    description: "A tabular data grid with scrollable content.",
+    description: "Display sortable rows of data with headers and scrolling.",
     groups: [
       g("variants", "Variants", VARIANT_PRIMARY_SECONDARY.map((v) => ({
         id: `tbl-${v.id}`,
@@ -555,7 +552,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "badge",
     name: "Badge",
     component: "Badge",
-    description: "A small status indicator anchored to another element.",
+    description: "Highlight counts or status on icons, avatars, and nav items.",
     groups: [
       g("variants", "Variants", [
         it("bd-primary", "Primary", { variant: "primary", label: "3" }),
@@ -578,7 +575,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "list-box",
     name: "List Box",
     component: "ListBox",
-    description: "A static list of selectable options.",
+    description: "Present a scrollable list of options for single or multi select.",
     groups: [
       g("variants", "Variants", [
         it("lb-default", "Default", { variant: "default" }),
@@ -590,7 +587,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "tag-group",
     name: "Tag Group",
     component: "TagGroup",
-    description: "A group of removable tags for multi-value selections.",
+    description: "Show and remove multiple tags like skills, labels, or emails.",
     groups: [
       g("variants", "Variants", [
         it("tg-default", "Default", { variant: "default" }),
@@ -674,7 +671,7 @@ export const NEW_FAMILY_DEFINITIONS = [
     id: "empty-state",
     name: "Empty State",
     component: "EmptyState",
-    description: "Placeholder content when there is nothing to display.",
+    description: "Guide users when a list, search, or inbox has nothing to show.",
     groups: [
       g("examples", "Examples", [
         it("es-default", "No results", { label: "No results found" }),

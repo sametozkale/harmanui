@@ -113,8 +113,9 @@ export const EXISTING_RENDERERS: Record<
     const { style, className } = ctx;
     return (
       <Switch
+        key={item.id}
         size={asEnum(p.size)}
-        defaultSelected={p.selected}
+        defaultSelected={p.selected ?? false}
         isDisabled={p.isDisabled}
         style={style}
         className={className}
@@ -136,8 +137,9 @@ export const EXISTING_RENDERERS: Record<
     const { style, className } = ctx;
     return (
       <Checkbox
+        key={item.id}
         variant={asEnum(p.variant)}
-        defaultSelected={p.selected}
+        defaultSelected={p.selected ?? false}
         isDisabled={p.isDisabled}
         style={style}
         className={className}

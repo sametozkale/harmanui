@@ -15,10 +15,10 @@ import type { Customization } from "@/lib/theme/customization";
 import { renderPreview } from "@/components/registry/render";
 import { Reset } from "@/lib/icons";
 import { playPlaygroundSound, shouldPlayPreviewInteractionSound } from "@/lib/sound";
-import { PLAYGROUND_SURFACE_CLASS } from "./constants";
+import { PLAYGROUND_SURFACE_CLASS, PLAYGROUND_CONTROL_HEIGHT_CLASS, PLAYGROUND_CONTROL_HEIGHT_IMPORTANT_CLASS } from "./constants";
 
 const previewPickerTriggerClass =
-  "!h-9 !min-w-[148px] !rounded-xl !border-0 !bg-white !py-2 !pl-3 !pr-7 !text-[13px] !font-medium !text-zinc-700 !shadow-[0_1px_2px_rgba(0,0,0,0.04)] !ring-1 !ring-[#f4f4f4] transition hover:!bg-white hover:!ring-zinc-300 data-[focus-visible]:!bg-white data-[focus-visible]:!ring-2 data-[focus-visible]:!ring-zinc-900/10";
+  `${PLAYGROUND_CONTROL_HEIGHT_IMPORTANT_CLASS} !min-w-[148px] !cursor-pointer !rounded-xl !border-0 !bg-white !py-2 !pl-3 !pr-7 !text-[13px] !font-medium !text-zinc-700 !shadow-[0_1px_2px_rgba(0,0,0,0.04)] !ring-1 !ring-[#f4f4f4] transition hover:!bg-white hover:!ring-[#eee] data-[focus-visible]:!bg-white data-[focus-visible]:!ring-2 data-[focus-visible]:!ring-zinc-900/10`;
 
 function PreviewPicker({
   groups,
@@ -81,7 +81,9 @@ export function PreviewTabMenu({
 
   return (
     <div
-      className={`mb-4 inline-flex w-fit shrink-0 gap-1 self-start rounded-2xl bg-zinc-100/80 p-1 ${className}`}
+      className={`mb-4 inline-flex h-9 w-fit shrink-0 gap-0.5 self-start rounded-xl bg-[#fafafa] p-0.5 ${className}`}
+      role="tablist"
+      aria-label={`${family.name} variants`}
     >
       {family.tabs.map((t) => {
         const active = t.id === tab.id;
@@ -89,11 +91,12 @@ export function PreviewTabMenu({
           <button
             key={t.id}
             type="button"
-            aria-pressed={active}
+            role="tab"
+            aria-selected={active}
             onClick={() => onTabChange(t.id)}
-            className={`rounded-xl px-4 py-2 text-[13px] font-medium transition active:scale-[0.98] ${
+            className={`flex h-8 cursor-pointer items-center rounded-[10px] px-3.5 text-[12.5px] font-medium tracking-[-0.01em] transition active:scale-[0.98] ${
               active
-                ? "bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.06),0_2px_6px_rgba(0,0,0,0.06)]"
+                ? "bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
                 : "text-zinc-500 hover:text-zinc-800"
             }`}
           >
@@ -157,7 +160,7 @@ export function PreviewStage({
         <button
           type="button"
           onClick={onReset}
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium text-zinc-500 transition hover:bg-white/70 hover:text-zinc-900 active:scale-[0.97]"
+          className={`flex ${PLAYGROUND_CONTROL_HEIGHT_CLASS} cursor-pointer items-center gap-1.5 rounded-xl px-2.5 text-[13px] font-medium text-zinc-500 transition hover:bg-zinc-100/80 hover:text-zinc-900 active:scale-[0.97]`}
         >
           <Reset className="size-3.5" strokeWidth={2} />
           Reset

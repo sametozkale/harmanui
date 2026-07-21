@@ -38,7 +38,7 @@ export function ColorField({
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-2.5 py-1 text-left"
+        className="flex w-full cursor-pointer items-center gap-2.5 py-1 text-left"
       >
         <span
           className="size-6 shrink-0 rounded-lg ring-1 ring-inset ring-black/10"
