@@ -768,7 +768,7 @@ function renderModal(_component: string, item: PreviewItem, ctx: SpecCtx): React
               <p>Make changes to your project. Click save when you are done.</p>
             </Modal.Body>
             <Modal.Footer>
-              <Button slot="close" variant="secondary">
+              <Button slot="close" variant="tertiary">
                 Cancel
               </Button>
               <Button slot="close" variant="primary">

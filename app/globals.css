@@ -22,6 +22,7 @@
 [data-theme="default"] {
   --primary: #0090ff;
   --accent: var(--primary);
+  --backdrop: rgb(39 39 42 / 0.06);
 }
 
 /* ------------------------------------------------------------------ *
@@ -79,6 +80,28 @@ pre,
 ::selection {
   background: #18181b;
   color: #ffffff;
+}
+
+/* Modal backdrop — soft gray tint; blur keeps the page readable underneath. */
+.modal__backdrop--opaque {
+  background-color: rgb(39 39 42 / 0.06) !important;
+  --tw-backdrop-blur: blur(3px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) !important;
+  backdrop-filter: var(--tw-backdrop-blur) !important;
+}
+
+.modal__backdrop--blur {
+  background-color: rgb(39 39 42 / 0.06) !important;
+  --tw-backdrop-blur: blur(3px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) !important;
+  backdrop-filter: var(--tw-backdrop-blur) !important;
+}
+
+.modal__dialog {
+  box-shadow:
+    0 2px 5px 0 rgb(0 0 0 / 0.035),
+    0 -3px 8px 0 rgb(0 0 0 / 0.015),
+    0 8px 18px 0 rgb(0 0 0 / 0.05) !important;
 }
 
 /* Button groups — keep HeroUI seam dividers short, centered, and consistent. */

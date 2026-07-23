@@ -599,7 +599,7 @@ function build(component: string, p: PreviewItem["props"], ctx: SpecCtx): CodeBu
           `                <p>Make changes to your project. Click save when you are done.</p>\n` +
           `              </Modal.Body>\n` +
           `              <Modal.Footer>\n` +
-          `                <Button slot="close" variant="secondary">Cancel</Button>\n` +
+          `                <Button slot="close" variant="tertiary">Cancel</Button>\n` +
           `                <Button slot="close" variant="primary">Save</Button>\n` +
           `              </Modal.Footer>\n` +
           `            </Modal.Dialog>\n` +
