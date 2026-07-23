@@ -20,9 +20,9 @@ export const EXISTING_CODE: Record<
 > = {
   button: (component, item, ctx) => {
     const p = item.props;
-    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     if (component === "ButtonGroup") {
-      const c = buttonGroupCodeCtx(ctx.customization, ctx.motionOptions);
+      const c = buttonGroupCodeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
       return {
         hero: ["ButtonGroup", "Button"],
         jsx: `<ButtonGroup\n${attrs([["variant", p.variant], ["size", p.size]])}${c.styleAttr ? `\n${c.styleAttr}` : ""}\n      >\n${BUTTON_GROUP_CHILDREN_JSX}\n      </ButtonGroup>`,
@@ -51,7 +51,7 @@ export const EXISTING_CODE: Record<
       return buildComponentCode("ToggleButtonGroup", item, ctx);
     }
     const p = item.props;
-    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     return {
       hero: ["ToggleButton"],
       jsx: `<ToggleButton\n${attrs([["variant", p.variant], ["size", p.size], ["defaultSelected", p.selected], ["isDisabled", p.isDisabled]])}\n${classAttr}\n${styleAttr}\n      >\n        ${p.label}\n      </ToggleButton>`,
@@ -62,7 +62,7 @@ export const EXISTING_CODE: Record<
       return buildComponentCode("SwitchGroup", item, ctx);
     }
     const p = item.props;
-    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     return {
       hero: ["Switch"],
       jsx:
@@ -81,7 +81,7 @@ export const EXISTING_CODE: Record<
       return buildComponentCode("CheckboxGroup", item, ctx);
     }
     const p = item.props;
-    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     return {
       hero: ["Checkbox"],
       jsx:
@@ -97,7 +97,7 @@ export const EXISTING_CODE: Record<
   },
   "radio-group": (_c, item, ctx) => {
     const p = item.props;
-    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     return {
       hero: ["RadioGroup", "Label", "Radio"],
       jsx:
@@ -132,7 +132,7 @@ export const EXISTING_CODE: Record<
   },
   chip: (_c, item, ctx) => {
     const p = item.props;
-    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     return {
       hero: ["Chip"],
       jsx: `<Chip\n${attrs([["variant", p.variant], ["color", p.color], ["size", p.size]])}\n${classAttr}\n${styleAttr}\n      >\n        ${p.label}\n      </Chip>`,
@@ -143,6 +143,7 @@ export const EXISTING_CODE: Record<
     const { classAttr, styleAttr } = intrinsicCodeCtx(
       ctx.customization,
       ctx.motionOptions,
+      ctx.visibility,
     );
     const imageLine = p.src
       ? `        <Avatar.Image src="${p.src}" alt="${p.alt ?? p.label ?? ""}" />\n`
@@ -160,6 +161,7 @@ export const EXISTING_CODE: Record<
     const { classAttr, styleAttr } = intrinsicCodeCtx(
       ctx.customization,
       ctx.motionOptions,
+      ctx.visibility,
     );
     return {
       hero: ["Kbd"],
@@ -168,7 +170,7 @@ export const EXISTING_CODE: Record<
   },
   alert: (_c, item, ctx) => {
     const p = item.props;
-    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     return {
       hero: ["Alert"],
       jsx:
@@ -188,6 +190,7 @@ export const EXISTING_CODE: Record<
     const { classAttr, styleAttr } = intrinsicCodeCtx(
       ctx.customization,
       ctx.motionOptions,
+      ctx.visibility,
     );
     return {
       hero: ["Spinner"],
@@ -202,6 +205,7 @@ export const EXISTING_CODE: Record<
     const { classAttr, styleAttr } = intrinsicCodeCtx(
       ctx.customization,
       ctx.motionOptions,
+      ctx.visibility,
     );
     return {
       hero: ["ProgressCircle"],
@@ -219,6 +223,7 @@ export const EXISTING_CODE: Record<
     const { classAttr, styleAttr } = intrinsicCodeCtx(
       ctx.customization,
       ctx.motionOptions,
+      ctx.visibility,
     );
     return {
       hero: ["Separator"],
@@ -227,7 +232,7 @@ export const EXISTING_CODE: Record<
   },
   skeleton: (_c, item, ctx) => {
     const p = item.props;
-    const { styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     const className = ctx.className;
     return {
       hero: ["Skeleton"],
@@ -236,7 +241,7 @@ export const EXISTING_CODE: Record<
   },
   card: (_c, item, ctx) => {
     const p = item.props;
-    const { styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     const className = ctx.className;
     return {
       hero: ["Card"],
@@ -245,7 +250,7 @@ export const EXISTING_CODE: Record<
   },
   link: (_c, item, ctx) => {
     const p = item.props;
-    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions);
+    const { classAttr, styleAttr } = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
     if (p.icon) {
       const iconImport = PREVIEW_ICON_IMPORT[p.icon];
       return {

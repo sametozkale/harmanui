@@ -13,6 +13,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Header, ListBox, Select } from "@heroui/react";
 import type { ComponentFamily, PreviewItem } from "@/lib/registry/types";
 import type { Customization } from "@/lib/theme/customization";
+import {
+  getCustomizeVisibility,
+  type CustomizeVisibility,
+} from "@/lib/theme/customize-capabilities";
 import { renderPreview } from "@/components/registry/render";
 import { Reset } from "@/lib/icons";
 import { playPlaygroundSound, shouldPlayPreviewInteractionSound } from "@/lib/sound";
@@ -127,6 +131,7 @@ export function PreviewStage({
   previewStyle,
   previewClassName,
   customization,
+  visibility,
   sound,
   onReset,
   className = "",
@@ -138,6 +143,7 @@ export function PreviewStage({
   previewStyle: CSSProperties;
   previewClassName: string;
   customization: Customization;
+  visibility: CustomizeVisibility;
   sound: Customization["sound"];
   onReset: () => void;
   className?: string;
@@ -198,6 +204,7 @@ export function PreviewStage({
               style: previewStyle,
               className: previewClassName,
               customization,
+              visibility,
             })}
           </div>
         </>
@@ -230,6 +237,12 @@ export function Preview({
   sound: Customization["sound"];
   onReset: () => void;
 }) {
+  const tab = family.tabs.find((t) => t.id === activeTabId) ?? family.tabs[0];
+  const selectedItem =
+    tab.groups.flatMap((group) => group.items).find((item) => item.id === selectedItemId) ??
+    tab.groups[0]?.items[0];
+  const visibility = getCustomizeVisibility(family.id, tab.id, selectedItem?.id);
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <PreviewTabMenu
@@ -245,6 +258,7 @@ export function Preview({
         previewStyle={previewStyle}
         previewClassName={previewClassName}
         customization={customization}
+        visibility={visibility}
         sound={sound}
         onReset={onReset}
         className="min-h-0 flex-1"

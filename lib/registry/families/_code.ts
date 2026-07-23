@@ -11,7 +11,9 @@ import {
 import {
   getCustomizeVisibility,
   sectionHasVisibleControls,
+  type CustomizeVisibility,
 } from "@/lib/theme/customize-capabilities";
+import { filterStyleEntries } from "@/lib/theme/style-filter";
 import { BUTTON_GROUP_STYLE_OMIT, type CodeBuilt } from "./_spec";
 
 export interface FormatExampleOptions {
@@ -33,8 +35,12 @@ function styleLiteralFromEntries(entries: Array<[string, string | number]>): str
   return `{\n${lines.join("\n")}\n      } as React.CSSProperties`;
 }
 
-export function styleLiteral(c: Customization): string {
-  return styleLiteralFromEntries(styleEntries(c));
+export function styleLiteral(
+  c: Customization,
+  visibility?: CustomizeVisibility,
+): string {
+  const entries = visibility ? filterStyleEntries(c, visibility) : styleEntries(c);
+  return styleLiteralFromEntries(entries);
 }
 
 export function attrs(
@@ -51,19 +57,29 @@ export function attrs(
 export function codeCtx(
   customization: Customization,
   motionOptions?: PreviewMotionOptions,
+  visibility?: CustomizeVisibility,
 ) {
+  const entries = visibility
+    ? filterStyleEntries(customization, visibility)
+    : styleEntries(customization);
   const className = buildPreviewClassName(customization, motionOptions);
-  const style = styleLiteral(customization);
+  const style = styleLiteralFromEntries(entries);
+  const hasStyle = entries.length > 0;
   return {
     className,
     style,
-    styleAttr: `        style={${style}}`,
-    classAttr: `        className="${className}"`,
+    styleAttr: hasStyle ? `        style={${style}}` : "",
+    classAttr: className ? `        className="${className}"` : "",
   };
 }
 
-export function buttonGroupStyleLiteral(c: Customization): string {
-  const entries = styleEntries(c).filter(([k]) => !BUTTON_GROUP_STYLE_OMIT.has(k));
+export function buttonGroupStyleLiteral(
+  c: Customization,
+  visibility?: CustomizeVisibility,
+): string {
+  const entries = (visibility ? filterStyleEntries(c, visibility) : styleEntries(c)).filter(
+    ([k]) => !BUTTON_GROUP_STYLE_OMIT.has(k),
+  );
   return styleLiteralFromEntries(entries);
 }
 
@@ -96,8 +112,9 @@ export function toggleButtonGroupChildrenJsx(variant?: string): string {
 export function buttonGroupCodeCtx(
   customization: Customization,
   _motionOptions?: PreviewMotionOptions,
+  visibility?: CustomizeVisibility,
 ) {
-  const style = buttonGroupStyleLiteral(customization);
+  const style = buttonGroupStyleLiteral(customization, visibility);
   const hasStyle = style !== "{} as React.CSSProperties";
   return {
     className: "",
@@ -131,8 +148,9 @@ const INTRINSIC_STYLE_OMIT = new Set([
 export function intrinsicCodeCtx(
   customization: Customization,
   motionOptions?: PreviewMotionOptions,
+  visibility?: CustomizeVisibility,
 ) {
-  const entries = styleEntries(customization).filter(
+  const entries = (visibility ? filterStyleEntries(customization, visibility) : styleEntries(customization)).filter(
     ([key]) => !INTRINSIC_STYLE_OMIT.has(key),
   );
   const style = styleLiteralFromEntries(entries);

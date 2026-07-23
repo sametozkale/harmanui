@@ -163,7 +163,7 @@ export function buildComponentCode(
 }
 
 function build(component: string, p: PreviewItem["props"], ctx: SpecCtx): CodeBuilt {
-  const c = codeCtx(ctx.customization, ctx.motionOptions);
+  const c = codeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
 
   switch (component) {
     case "TextField":
@@ -346,7 +346,7 @@ function build(component: string, p: PreviewItem["props"], ctx: SpecCtx): CodeBu
       };
 
     case "ToggleButtonGroup": {
-      const c = buttonGroupCodeCtx(ctx.customization, ctx.motionOptions);
+      const c = buttonGroupCodeCtx(ctx.customization, ctx.motionOptions, ctx.visibility);
       return {
         hero: ["ToggleButtonGroup", "ToggleButton"],
         jsx:
@@ -1040,7 +1040,7 @@ function build(component: string, p: PreviewItem["props"], ctx: SpecCtx): CodeBu
         ...ACCORDION_MOTION_PREAMBLE,
         ACCORDION_MOTION_PANEL_HELPER,
       ];
-      const accordionStyle = harmanAccordionStyleLiteral(ctx.customization);
+      const accordionStyle = harmanAccordionStyleLiteral(ctx.customization, ctx.visibility);
 
       if (p.variant === "surface") {
         return {

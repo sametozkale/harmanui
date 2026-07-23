@@ -10,7 +10,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   type Customization,
-  buildPreviewStyle,
   buildPreviewClassName,
   encodeCustomization,
   decodeCustomization,
@@ -21,7 +20,11 @@ import {
   resolveCustomization,
   saveCustomizationsToStorage,
 } from "@/lib/theme/customization-store";
-import { getPreviewMotionOptions } from "@/lib/theme/customize-capabilities";
+import {
+  getCustomizeVisibility,
+  getPreviewMotionOptions,
+} from "@/lib/theme/customize-capabilities";
+import { filterStyleEntries } from "@/lib/theme/style-filter";
 import { FAMILIES, GITHUB_REPO } from "@/lib/registry/registry";
 import type { PreviewItem } from "@/lib/registry/types";
 import { generateCode } from "@/lib/codegen/generate";
@@ -29,7 +32,7 @@ import { PLAYGROUND_PANEL_SHELL_CLASS, PLAYGROUND_STAGE_ROW_CLASS } from "./cons
 import { Sidebar } from "./sidebar";
 import { PreviewStage, PreviewTabMenu } from "./preview";
 import { CtaStrip } from "./cta-strip";
-import { AboutButton } from "./about-button";
+import { PlaygroundFooterActions } from "./playground-footer-actions";
 import { ViewGithubLink } from "./view-github-link";
 import { CustomizationPanel } from "./customization-panel";
 import { PlaygroundProviders } from "./providers";
@@ -175,7 +178,14 @@ export function PlaygroundClient() {
     [familyId, tabId, itemId],
   );
 
-  const previewStyle = useMemo(() => buildPreviewStyle(customization), [customization]);
+  const visibility = useMemo(
+    () => getCustomizeVisibility(familyId, tabId, selectedItem?.id),
+    [familyId, tabId, selectedItem?.id],
+  );
+  const previewStyle = useMemo(
+    () => Object.fromEntries(filterStyleEntries(customization, visibility)),
+    [customization, visibility],
+  );
   const motionOptions = useMemo(
     () => getPreviewMotionOptions(familyId, tabId, customization, selectedItem?.id),
     [familyId, tabId, customization, selectedItem?.id],
@@ -272,6 +282,7 @@ export function PlaygroundClient() {
               previewStyle={previewStyle}
               previewClassName={previewClassName}
               customization={customization}
+              visibility={visibility}
               sound={customization.sound}
               onReset={handleResetCustomization}
               className="h-full min-h-0"
@@ -303,7 +314,7 @@ export function PlaygroundClient() {
             y={10}
             className="mt-3 hidden shrink-0 lg:col-start-1 lg:row-start-4 lg:flex"
           >
-            <AboutButton />
+            <PlaygroundFooterActions />
           </Reveal>
           <Reveal
             delay={revealDelay(5.5)}

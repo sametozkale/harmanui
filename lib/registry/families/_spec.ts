@@ -4,6 +4,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import type { Customization, PreviewMotionOptions } from "@/lib/theme/customization";
+import type { CustomizeVisibility } from "@/lib/theme/customize-capabilities";
 import type { ComponentFamily, PreviewItem } from "../types";
 import { harmanAccordionPreviewStyle } from "./accordion-style";
 
@@ -12,6 +13,7 @@ export interface SpecCtx {
   className: string;
   customization: Customization;
   motionOptions?: PreviewMotionOptions;
+  visibility?: CustomizeVisibility;
 }
 
 export interface CodeBuilt {
@@ -83,7 +85,7 @@ export function buttonGroupPreviewCtx(ctx: SpecCtx): SpecCtx {
 export function harmanAccordionPreviewCtx(ctx: SpecCtx): SpecCtx {
   return {
     ...ctx,
-    style: harmanAccordionPreviewStyle(ctx.customization),
+    style: harmanAccordionPreviewStyle(ctx.customization, ctx.visibility),
     className: ctx.className,
   };
 }

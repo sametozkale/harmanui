@@ -25,8 +25,11 @@ export const PLAYGROUND_TAB_MENU_COMPACT_CLASS =
   "inline-flex h-9 w-fit shrink-0 gap-0.5 rounded-xl bg-[#fafafa] p-0.5";
 
 /** Pill switch tab menu — customization panel segmented controls (on #fafafa sidebar). */
+export const PLAYGROUND_CUSTOMIZE_TAB_MENU_SCROLL_CLASS =
+  "min-w-0 overflow-x-auto overscroll-x-contain playground-segmented-scroll";
+
 export const PLAYGROUND_CUSTOMIZE_TAB_MENU_CLASS =
-  "flex h-9 w-full gap-0.5 rounded-xl bg-zinc-100 p-0.5";
+  "inline-flex h-9 min-w-full w-max shrink-0 gap-0.5 rounded-xl bg-zinc-100 p-0.5";
 
 export function playgroundTabMenuButtonClass(active: boolean, className = ""): string {
   return `flex h-8 cursor-pointer items-center justify-center rounded-[10px] px-3.5 text-[12.5px] font-medium tracking-[-0.01em] transition active:scale-[0.98] ${

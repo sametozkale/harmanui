@@ -1,12 +1,24 @@
 /**
  * Per-component Customize panel visibility.
  *
- * Maps the selected family + tab to which token controls are meaningful in
- * preview and generated code. State is not pruned — only the panel UI hides
- * inapplicable controls.
+ * Resolves which token controls are meaningful from registry metadata,
+ * capability profiles, and fine-grained overrides. Preview/codegen should
+ * filter style output with {@link filterStyleEntries} using the same visibility.
  */
 
+import { FAMILIES } from "../registry/families";
+import type {
+  CapabilityProfileId,
+  ComponentFamily,
+  FamilyTab,
+  PreviewItem,
+} from "../registry/types";
 import type { PreviewMotionOptions } from "./customization";
+
+export type {
+  CapabilityProfileId,
+  CustomizeStyleTarget,
+} from "../registry/types";
 
 export type CustomizeControlKey =
   | "fontFamily"
@@ -44,19 +56,6 @@ export type CustomizeSectionKey =
   | "sound";
 
 export type CustomizeVisibility = Record<CustomizeControlKey, boolean>;
-
-export type CapabilityProfileId =
-  | "interactive-control"
-  | "group-filtered"
-  | "group-unfiltered"
-  | "selection-control"
-  | "form-field"
-  | "container-surface"
-  | "fussionary-accordion"
-  | "overlay-trigger-wrapper"
-  | "split-attachment"
-  | "non-text-metric"
-  | "typography-native";
 
 const SECTION_CONTROLS: Record<CustomizeSectionKey, CustomizeControlKey[]> = {
   typography: ["fontFamily", "fontSize", "fontWeight", "letterSpacing", "wrap"],
@@ -103,9 +102,15 @@ const ALL_ON: CustomizeVisibility = {
   soundCue: true,
 };
 
-function profile(
-  overrides: Partial<CustomizeVisibility>,
-): CustomizeVisibility {
+const TYPOGRAPHY_OFF: Partial<CustomizeVisibility> = {
+  fontFamily: false,
+  fontSize: false,
+  fontWeight: false,
+  letterSpacing: false,
+  wrap: false,
+};
+
+function profile(overrides: Partial<CustomizeVisibility>): CustomizeVisibility {
   return { ...ALL_ON, ...overrides };
 }
 
@@ -168,33 +173,16 @@ const PROFILES: Record<CapabilityProfileId, CustomizeVisibility> = {
     border: false,
     borderWidth: false,
     innerRadius: false,
+    duration: false,
+    easing: false,
     hover: false,
     soundEnabled: false,
     soundVolume: false,
     soundCue: false,
   }),
 
-  "overlay-trigger-wrapper": profile({
-    fontFamily: false,
-    fontSize: false,
-    fontWeight: false,
-    letterSpacing: false,
-    wrap: false,
-    colorOverride: false,
-    background: false,
-    text: false,
-    border: false,
-    borderWidth: false,
-    customPadding: false,
-    paddingX: false,
-    paddingY: false,
-    gap: false,
-    radius: false,
-    shadowPreset: false,
-    shadowColor: false,
-    shadowOpacity: false,
-    hover: false,
-  }),
+  /** Overlay triggers are styled like interactive buttons. */
+  "overlay-trigger-wrapper": ALL_ON,
 
   "split-attachment": profile({
     fontFamily: false,
@@ -282,7 +270,7 @@ const FAMILY_PROFILE: Record<string, CapabilityProfileId> = {
 /** Item-specific profile overrides (variant rows in the playground). */
 const ITEM_PROFILE: Record<string, CapabilityProfileId> = {
   "accordion:ac-default": "fussionary-accordion",
-  "accordion:ac-surface": "container-surface",
+  "accordion:ac-surface": "fussionary-accordion",
 };
 
 /** Tab-specific profile overrides for multi-tab families. */
@@ -300,6 +288,7 @@ const TAB_PROFILE: Record<string, CapabilityProfileId> = {
   "color:color-field": "form-field",
   "color:color-input-group": "form-field",
   "color:color-swatch-picker": "selection-control",
+  "color:color-picker": "interactive-control",
 };
 
 /** Controls hidden for fixed-geometry components (Avatar, Spinner, Separator, …). */
@@ -328,22 +317,87 @@ const INTRINSIC_CONTROL_OVERRIDES: Partial<CustomizeVisibility> = {
 
 /** Fine-grained control overrides on top of a profile. */
 const CONTROL_OVERRIDES: Record<string, Partial<CustomizeVisibility>> = {
-  "button:icon-button": {
-    fontWeight: false,
-    letterSpacing: false,
-    wrap: false,
-  },
   avatar: INTRINSIC_CONTROL_OVERRIDES,
   spinner: INTRINSIC_CONTROL_OVERRIDES,
   separator: INTRINSIC_CONTROL_OVERRIDES,
   kbd: INTRINSIC_CONTROL_OVERRIDES,
-  "progress-circle": INTRINSIC_CONTROL_OVERRIDES,
+  "progress-circle:progress-circle": INTRINSIC_CONTROL_OVERRIDES,
 };
 
 const PRESS_FEEDBACK_PROFILES = new Set<CapabilityProfileId>([
   "interactive-control",
   "overlay-trigger-wrapper",
 ]);
+
+export interface RegistryCustomizeContext {
+  family: ComponentFamily;
+  tab: FamilyTab;
+  item?: PreviewItem;
+}
+
+export function findRegistryCustomizeContext(
+  familyId: string,
+  tabId: string,
+  itemId?: string,
+): RegistryCustomizeContext | null {
+  const family = FAMILIES[familyId];
+  if (!family) return null;
+
+  const tab = family.tabs.find((entry) => entry.id === tabId) ?? family.tabs[0];
+  if (!tab) return null;
+
+  let item: PreviewItem | undefined;
+  if (itemId) {
+    for (const group of tab.groups) {
+      item = group.items.find((entry) => entry.id === itemId);
+      if (item) break;
+    }
+  }
+
+  return { family, tab, item };
+}
+
+function resolveProfileId(
+  familyId: string,
+  tabId: string,
+  itemId?: string,
+  registry?: RegistryCustomizeContext | null,
+): CapabilityProfileId {
+  const ctx = registry ?? findRegistryCustomizeContext(familyId, tabId, itemId);
+  const tabKey = `${familyId}:${tabId}`;
+  const itemKey = itemId ? `${familyId}:${itemId}` : "";
+
+  return (
+    ctx?.item?.customizeProfile ??
+    ctx?.tab.customizeProfile ??
+    ITEM_PROFILE[itemKey] ??
+    TAB_PROFILE[tabKey] ??
+    FAMILY_PROFILE[familyId] ??
+    "interactive-control"
+  );
+}
+
+function isIconOnlyContext(ctx: RegistryCustomizeContext | null): boolean {
+  if (!ctx) return false;
+  return (
+    ctx.tab.iconOnly === true ||
+    ctx.tab.component === "CloseButton" ||
+    ctx.item?.props.isIconOnly === true
+  );
+}
+
+function applyRegistryAutoRules(
+  visibility: CustomizeVisibility,
+  ctx: RegistryCustomizeContext | null,
+): CustomizeVisibility {
+  if (!ctx) return visibility;
+
+  if (isIconOnlyContext(ctx)) {
+    return { ...visibility, ...TYPOGRAPHY_OFF };
+  }
+
+  return visibility;
+}
 
 export function getPreviewMotionOptions(
   familyId: string,
@@ -352,13 +406,7 @@ export function getPreviewMotionOptions(
   itemId?: string,
 ): PreviewMotionOptions {
   const visibility = getCustomizeVisibility(familyId, tabId, itemId);
-  const tabKey = `${familyId}:${tabId}`;
-  const itemKey = itemId ? `${familyId}:${itemId}` : "";
-  const profileId =
-    ITEM_PROFILE[itemKey] ??
-    TAB_PROFILE[tabKey] ??
-    FAMILY_PROFILE[familyId] ??
-    "interactive-control";
+  const profileId = resolveProfileId(familyId, tabId, itemId);
 
   return {
     pressFeedback: PRESS_FEEDBACK_PROFILES.has(profileId),
@@ -371,21 +419,24 @@ export function getCustomizeVisibility(
   tabId: string,
   itemId?: string,
 ): CustomizeVisibility {
+  const registry = findRegistryCustomizeContext(familyId, tabId, itemId);
   const tabKey = `${familyId}:${tabId}`;
   const itemKey = itemId ? `${familyId}:${itemId}` : "";
-  const profileId =
-    ITEM_PROFILE[itemKey] ??
-    TAB_PROFILE[tabKey] ??
-    FAMILY_PROFILE[familyId] ??
-    "interactive-control";
+  const profileId = resolveProfileId(familyId, tabId, itemId, registry);
   const base = PROFILES[profileId];
-  const tabOverrides = CONTROL_OVERRIDES[tabKey];
   const familyOverrides = CONTROL_OVERRIDES[familyId];
-  return {
-    ...base,
-    ...familyOverrides,
-    ...tabOverrides,
-  };
+  const tabOverrides = CONTROL_OVERRIDES[tabKey];
+  const itemOverrides = CONTROL_OVERRIDES[itemKey];
+
+  return applyRegistryAutoRules(
+    {
+      ...base,
+      ...familyOverrides,
+      ...tabOverrides,
+      ...itemOverrides,
+    },
+    registry,
+  );
 }
 
 export function sectionHasVisibleControls(

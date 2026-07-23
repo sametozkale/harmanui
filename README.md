@@ -59,6 +59,7 @@ Requires **Node.js 20+**.
 | ------------ | ------------------------------------------------ |
 | `/`          | Atoms playground (main three-column experience)  |
 | `/molecules` | Molecules section (placeholder)                  |
+| `/how-to-use` | Integration guide — install, customize, copy code, share URLs |
 | `/about`     | Project overview and design principles           |
 
 ## Playground layout
@@ -76,7 +77,7 @@ The home page is a responsive **three-column grid**:
    Layout, Shadow, Motion, Sound). Controls are shown or hidden per component
    capability so irrelevant tokens never clutter the UI.
 
-Footer row: **About** (left), CTA strip (center), **View on GitHub** (right on
+Footer row: **How to use**, **About**, and **Feedback** (left), CTA strip (center), **View on GitHub** (right on
 xl screens). The header includes an Atoms / Molecules switch and
 `npx harman-ui init`.
 
@@ -114,6 +115,7 @@ All **57** sidebar entries are playable in the playground today.
 app/
   page.tsx                 Atoms playground (PlaygroundClient)
   about/page.tsx           About page
+  how-to-use/page.tsx      How to use guide
   molecules/page.tsx       Molecules placeholder
   globals.css              Tailwind v4, HeroUI, playground chrome
 components/

@@ -7,7 +7,7 @@ import { formatExample } from "../registry/families/_code";
 import { SPECS } from "../registry/families/specs";
 import type { FamilyTab, PreviewProps } from "../registry/types";
 import { DEFAULT_CUSTOMIZATION } from "../theme/customization";
-import { getPreviewMotionOptions } from "../theme/customize-capabilities";
+import { getCustomizeVisibility, getPreviewMotionOptions } from "../theme/customize-capabilities";
 
 export interface GenerateArgs {
   familyId: string;
@@ -30,11 +30,13 @@ export function generateCode({
 
   const item = { id: itemId ?? "", label: "", props };
   const motionOptions = getPreviewMotionOptions(familyId, tab.id, customization, itemId);
+  const visibility = getCustomizeVisibility(familyId, tab.id, itemId);
   const built = spec.code(tab.component, item, {
     style: {},
     className: "",
     customization: customization ?? DEFAULT_CUSTOMIZATION,
     motionOptions,
+    visibility,
   });
 
   return formatExample(built, {

@@ -87,10 +87,32 @@ export interface PreviewProps {
   alt?: string;
 }
 
+export type CustomizeStyleTarget =
+  | "default"
+  | "group-filtered"
+  | "intrinsic"
+  | "harman-accordion"
+  | "trigger";
+
+export type CapabilityProfileId =
+  | "interactive-control"
+  | "group-filtered"
+  | "group-unfiltered"
+  | "selection-control"
+  | "form-field"
+  | "container-surface"
+  | "fussionary-accordion"
+  | "overlay-trigger-wrapper"
+  | "split-attachment"
+  | "non-text-metric"
+  | "typography-native";
+
 export interface PreviewItem {
   id: string;
   label: string;
   props: PreviewProps;
+  /** Optional per-variant customize profile override. */
+  customizeProfile?: CapabilityProfileId;
 }
 
 export interface PreviewGroup {
@@ -108,6 +130,10 @@ export interface FamilyTab {
   component: string;
   /** True when items are icon-only buttons. */
   iconOnly?: boolean;
+  /** Optional customize profile for this tab. */
+  customizeProfile?: CapabilityProfileId;
+  /** How playground tokens map to preview/codegen output. */
+  styleTarget?: CustomizeStyleTarget;
   groups: PreviewGroup[];
 }
 

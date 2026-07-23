@@ -4,12 +4,13 @@
  */
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { useId, useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Switch as HeroSwitch, Slider as HeroSlider } from "@heroui/react";
 import { ChevronDown } from "@/lib/icons";
 import {
   PLAYGROUND_CUSTOMIZE_TAB_MENU_CLASS,
+  PLAYGROUND_CUSTOMIZE_TAB_MENU_SCROLL_CLASS,
   playgroundTabMenuButtonClass,
 } from "./constants";
 
@@ -102,23 +103,39 @@ export function Segmented<T extends string>({
   value: T;
   onChange: (value: T) => void;
 }) {
+  const activeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    activeRef.current?.scrollIntoView({
+      inline: "nearest",
+      block: "nearest",
+      behavior: "smooth",
+    });
+  }, [value]);
+
   return (
     <ControlRow label={label ?? ""}>
-      <div role="group" aria-label={label} className={PLAYGROUND_CUSTOMIZE_TAB_MENU_CLASS}>
-        {options.map((opt) => {
-          const active = opt.value === value;
-          return (
-            <button
-              key={opt.value}
-              type="button"
-              aria-pressed={active}
-              onClick={() => onChange(opt.value)}
-              className={playgroundTabMenuButtonClass(active, "flex-1")}
-            >
-              {opt.label}
-            </button>
-          );
-        })}
+      <div className={PLAYGROUND_CUSTOMIZE_TAB_MENU_SCROLL_CLASS}>
+        <div role="group" aria-label={label} className={PLAYGROUND_CUSTOMIZE_TAB_MENU_CLASS}>
+          {options.map((opt) => {
+            const active = opt.value === value;
+            return (
+              <button
+                key={opt.value}
+                ref={active ? activeRef : undefined}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onChange(opt.value)}
+                className={playgroundTabMenuButtonClass(
+                  active,
+                  "min-w-max shrink-0 basis-0 flex-1 whitespace-nowrap",
+                )}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </ControlRow>
   );
