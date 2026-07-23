@@ -587,7 +587,7 @@ function build(component: string, p: PreviewItem["props"], ctx: SpecCtx): CodeBu
           `        </Button>\n` +
           `        <Modal.Backdrop\n${attrs([["variant", p.variant]])}\n        >\n` +
           `          <Modal.Container\n${attrs([["size", p.size]])}\n          >\n` +
-          `            <Modal.Dialog className="sm:max-w-[360px]">\n` +
+          `            <Modal.Dialog>\n` +
           `              <Modal.CloseTrigger />\n` +
           `              <Modal.Header>\n` +
           `                <Modal.Icon className="bg-default text-foreground">\n` +

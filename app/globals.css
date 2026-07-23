@@ -23,6 +23,9 @@
   --primary: #0090ff;
   --accent: var(--primary);
   --backdrop: rgb(39 39 42 / 0.06);
+  --harman-overlay-tint: rgb(39 39 42 / 0.06);
+  --harman-overlay-blur: blur(3px);
+  --harman-overlay-blur-strong: blur(5px);
 }
 
 /* ------------------------------------------------------------------ *
@@ -82,19 +85,32 @@ pre,
   color: #ffffff;
 }
 
-/* Modal backdrop — soft gray tint; blur keeps the page readable underneath. */
-.modal__backdrop--opaque {
-  background-color: rgb(39 39 42 / 0.06) !important;
-  --tw-backdrop-blur: blur(3px);
+/* Modal / drawer / alert-dialog backdrop — tuned overlay tint + blur. */
+.modal__backdrop--opaque,
+.drawer__backdrop--opaque,
+.alert-dialog__backdrop--opaque {
+  background-color: var(--harman-overlay-tint) !important;
+  --tw-backdrop-blur: var(--harman-overlay-blur);
   -webkit-backdrop-filter: var(--tw-backdrop-blur) !important;
   backdrop-filter: var(--tw-backdrop-blur) !important;
 }
 
-.modal__backdrop--blur {
-  background-color: rgb(39 39 42 / 0.06) !important;
-  --tw-backdrop-blur: blur(3px);
+.modal__backdrop--blur,
+.drawer__backdrop--blur,
+.alert-dialog__backdrop--blur {
+  background-color: var(--harman-overlay-tint) !important;
+  --tw-backdrop-blur: var(--harman-overlay-blur-strong);
   -webkit-backdrop-filter: var(--tw-backdrop-blur) !important;
   backdrop-filter: var(--tw-backdrop-blur) !important;
+}
+
+.modal__backdrop--transparent,
+.drawer__backdrop--transparent,
+.alert-dialog__backdrop--transparent {
+  background-color: transparent !important;
+  --tw-backdrop-blur: blur(0);
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 .modal__dialog {

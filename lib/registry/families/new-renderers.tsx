@@ -756,7 +756,7 @@ function renderModal(_component: string, item: PreviewItem, ctx: SpecCtx): React
       </Button>
       <Modal.Backdrop variant={asEnum(p.variant)}>
         <Modal.Container size={asEnum(p.size)}>
-          <Modal.Dialog className="sm:max-w-[360px]">
+          <Modal.Dialog>
             <Modal.CloseTrigger />
             <Modal.Header>
               <Modal.Icon className="bg-default text-foreground">

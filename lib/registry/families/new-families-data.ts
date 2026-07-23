@@ -375,14 +375,14 @@ export const NEW_FAMILY_DEFINITIONS = [
     description: "A dialog overlay that focuses attention on a single task.",
     groups: [
       g("sizes", "Sizes", [
-        it("mo-sm", "Small", { size: "sm", label: "Open modal" }),
-        it("mo-md", "Medium", { size: "md", label: "Open modal" }),
-        it("mo-lg", "Large", { size: "lg", label: "Open modal" }),
+        it("mo-sm", "Small", { size: "sm", variant: "opaque", label: "Open modal" }),
+        it("mo-md", "Medium", { size: "md", variant: "opaque", label: "Open modal" }),
+        it("mo-lg", "Large", { size: "lg", variant: "opaque", label: "Open modal" }),
       ]),
       g("variants", "Backdrop", [
-        it("mo-opaque", "Opaque", { variant: "opaque", label: "Open modal" }),
-        it("mo-blur", "Blur", { variant: "blur", label: "Open modal" }),
-        it("mo-transparent", "Transparent", { variant: "transparent", label: "Open modal" }),
+        it("mo-opaque", "Opaque", { variant: "opaque", size: "md", label: "Open modal" }),
+        it("mo-blur", "Blur", { variant: "blur", size: "md", label: "Open modal" }),
+        it("mo-transparent", "Transparent", { variant: "transparent", size: "md", label: "Open modal" }),
       ]),
     ],
   }),
